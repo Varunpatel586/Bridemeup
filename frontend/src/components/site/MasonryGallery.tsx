@@ -73,11 +73,10 @@ export function MasonryGallery() {
               <button
                 key={c}
                 onClick={() => setActive(c)}
-                className={`px-4 py-2 rounded-full text-[11px] font-medium transition-all ${
-                  active === c
+                className={`px-4 py-2 rounded-full text-[11px] font-medium transition-all ${active === c
                     ? "bg-plum text-ivory border border-plum"
                     : "border border-plum/10 text-plum/70 hover:border-plum/30 hover:bg-pearl"
-                }`}
+                  }`}
               >
                 {c}
               </button>

@@ -9,14 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SalonsRouteImport } from './routes/salons'
 import { Route as PlannerRouteImport } from './routes/planner'
 import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AiAnalysisRouteImport } from './routes/ai-analysis'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StylistsIdRouteImport } from './routes/stylists.$id'
+import { Route as SalonsIdRouteImport } from './routes/salons.$id'
 
+const SalonsRoute = SalonsRouteImport.update({
+  id: '/salons',
+  path: '/salons',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlannerRoute = PlannerRouteImport.update({
   id: '/planner',
   path: '/planner',
@@ -37,6 +47,11 @@ const GalleryRoute = GalleryRouteImport.update({
   path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreRoute = ExploreRouteImport.update({
+  id: '/explore',
+  path: '/explore',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiscoverRoute = DiscoverRouteImport.update({
   id: '/discover',
   path: '/discover',
@@ -47,82 +62,138 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AiAnalysisRoute = AiAnalysisRouteImport.update({
+  id: '/ai-analysis',
+  path: '/ai-analysis',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StylistsIdRoute = StylistsIdRouteImport.update({
+  id: '/stylists/$id',
+  path: '/stylists/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalonsIdRoute = SalonsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => SalonsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ai-analysis': typeof AiAnalysisRoute
   '/auth': typeof AuthRoute
   '/discover': typeof DiscoverRoute
+  '/explore': typeof ExploreRoute
   '/gallery': typeof GalleryRoute
   '/onboarding': typeof OnboardingRoute
   '/packages': typeof PackagesRoute
   '/planner': typeof PlannerRoute
+  '/salons': typeof SalonsRouteWithChildren
+  '/salons/$id': typeof SalonsIdRoute
+  '/stylists/$id': typeof StylistsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ai-analysis': typeof AiAnalysisRoute
   '/auth': typeof AuthRoute
   '/discover': typeof DiscoverRoute
+  '/explore': typeof ExploreRoute
   '/gallery': typeof GalleryRoute
   '/onboarding': typeof OnboardingRoute
   '/packages': typeof PackagesRoute
   '/planner': typeof PlannerRoute
+  '/salons': typeof SalonsRouteWithChildren
+  '/salons/$id': typeof SalonsIdRoute
+  '/stylists/$id': typeof StylistsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ai-analysis': typeof AiAnalysisRoute
   '/auth': typeof AuthRoute
   '/discover': typeof DiscoverRoute
+  '/explore': typeof ExploreRoute
   '/gallery': typeof GalleryRoute
   '/onboarding': typeof OnboardingRoute
   '/packages': typeof PackagesRoute
   '/planner': typeof PlannerRoute
+  '/salons': typeof SalonsRouteWithChildren
+  '/salons/$id': typeof SalonsIdRoute
+  '/stylists/$id': typeof StylistsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ai-analysis'
     | '/auth'
     | '/discover'
+    | '/explore'
     | '/gallery'
     | '/onboarding'
     | '/packages'
     | '/planner'
+    | '/salons'
+    | '/salons/$id'
+    | '/stylists/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ai-analysis'
     | '/auth'
     | '/discover'
+    | '/explore'
     | '/gallery'
     | '/onboarding'
     | '/packages'
     | '/planner'
+    | '/salons'
+    | '/salons/$id'
+    | '/stylists/$id'
   id:
     | '__root__'
     | '/'
+    | '/ai-analysis'
     | '/auth'
     | '/discover'
+    | '/explore'
     | '/gallery'
     | '/onboarding'
     | '/packages'
     | '/planner'
+    | '/salons'
+    | '/salons/$id'
+    | '/stylists/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AiAnalysisRoute: typeof AiAnalysisRoute
   AuthRoute: typeof AuthRoute
   DiscoverRoute: typeof DiscoverRoute
+  ExploreRoute: typeof ExploreRoute
   GalleryRoute: typeof GalleryRoute
   OnboardingRoute: typeof OnboardingRoute
   PackagesRoute: typeof PackagesRoute
   PlannerRoute: typeof PlannerRoute
+  SalonsRoute: typeof SalonsRouteWithChildren
+  StylistsIdRoute: typeof StylistsIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/salons': {
+      id: '/salons'
+      path: '/salons'
+      fullPath: '/salons'
+      preLoaderRoute: typeof SalonsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/planner': {
       id: '/planner'
       path: '/planner'
@@ -151,6 +222,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore': {
+      id: '/explore'
+      path: '/explore'
+      fullPath: '/explore'
+      preLoaderRoute: typeof ExploreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/discover': {
       id: '/discover'
       path: '/discover'
@@ -165,6 +243,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ai-analysis': {
+      id: '/ai-analysis'
+      path: '/ai-analysis'
+      fullPath: '/ai-analysis'
+      preLoaderRoute: typeof AiAnalysisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -172,18 +257,57 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/stylists/$id': {
+      id: '/stylists/$id'
+      path: '/stylists/$id'
+      fullPath: '/stylists/$id'
+      preLoaderRoute: typeof StylistsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/salons/$id': {
+      id: '/salons/$id'
+      path: '/$id'
+      fullPath: '/salons/$id'
+      preLoaderRoute: typeof SalonsIdRouteImport
+      parentRoute: typeof SalonsRoute
+    }
   }
 }
 
+interface SalonsRouteChildren {
+  SalonsIdRoute: typeof SalonsIdRoute
+}
+
+const SalonsRouteChildren: SalonsRouteChildren = {
+  SalonsIdRoute: SalonsIdRoute,
+}
+
+const SalonsRouteWithChildren =
+  SalonsRoute._addFileChildren(SalonsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AiAnalysisRoute: AiAnalysisRoute,
   AuthRoute: AuthRoute,
   DiscoverRoute: DiscoverRoute,
+  ExploreRoute: ExploreRoute,
   GalleryRoute: GalleryRoute,
   OnboardingRoute: OnboardingRoute,
   PackagesRoute: PackagesRoute,
   PlannerRoute: PlannerRoute,
+  SalonsRoute: SalonsRouteWithChildren,
+  StylistsIdRoute: StylistsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
