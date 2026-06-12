@@ -1,11 +1,8 @@
 import { motion } from "framer-motion";
-import couple from "@/assets/gallery-couple.jpg";
-import bride from "@/assets/hero-bride.jpg";
-import haldi from "@/assets/gallery-haldi.jpg";
 
 const stories = [
   {
-    img: bride,
+    img: "/images/hero-bride.jpg",
     bride: "Aanya & Rohan",
     venue: "Leela Palace · Delhi",
     quote:
@@ -14,7 +11,7 @@ const stories = [
     artists: 3,
   },
   {
-    img: couple,
+    img: "/images/gallery-couple.jpg",
     bride: "Priya & Arjun",
     venue: "Taj Mahal Hotel · Mumbai",
     quote:
@@ -23,7 +20,7 @@ const stories = [
     artists: 5,
   },
   {
-    img: haldi,
+    img: "/images/gallery-haldi.jpg",
     bride: "Ishita & Veer",
     venue: "Suryagarh · Jaisalmer",
     quote:

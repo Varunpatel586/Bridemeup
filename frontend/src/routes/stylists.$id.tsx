@@ -1,32 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Star, Calendar, Clock, Check } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/lib/AuthContext";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/stylists/$id")({
   component: StylistProfile,
 });
 
-const MOCK_STYLIST = {
-    id: "stylist-1",
-    name: "Anya Sharma",
-    salon_name: "Lumière Artistry",
-    profile_image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=500",
-    domain_ratings: {"Hair": 4.9, "Pedicure": 4.5, "Facials": 4.8, "DeTan": 4.7, "CleanUp": 4.9},
-    portfolio_images: [
-        "https://images.unsplash.com/photo-1595959183082-7b570b7e08e2?auto=format&fit=crop&q=80&w=500",
-        "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&q=80&w=500",
-        "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=500"
-    ],
-    packages: [
-        { id: "pkg_1", name: "Silver Elegance", price: 15000, services: ["HD Makeup", "Basic Hairstyling", "Draping"] },
-        { id: "pkg_2", name: "Gold Radiance", price: 25000, services: ["Airbrush Makeup", "Premium Hairstyling", "Draping", "Lashes"] },
-        { id: "pkg_3", name: "Diamond Signature", price: 40000, services: ["HD Airbrush", "Extensions", "Pre-bridal Consultation", "Trial"] },
-    ]
-};
-
 function StylistProfile() {
+    const { id } = Route.useParams();
+    const navigate = useNavigate();
+    const { user } = useAuth();
+    
+    const [stylist, setStylist] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [bookingState, setBookingState] = useState<"idle" | "loading" | "success">("idle");
+
     const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -35,6 +27,66 @@ function StylistProfile() {
     const dates = ["Oct 12", "Oct 13", "Oct 14", "Oct 15", "Oct 16"];
     const morningSlots = ["09:00 AM", "10:30 AM", "11:00 AM"];
     const eveningSlots = ["02:00 PM", "04:30 PM", "06:00 PM"];
+
+    useEffect(() => {
+        async function loadStylist() {
+            try {
+                const { data, error } = await supabase
+                    .from('stylists')
+                    .select('*, salons(*)')
+                    .eq('id', id)
+                    .single();
+                
+                if (error || !data) throw new Error("Not found");
+                
+                const mappedStylist = {
+                    ...data,
+                    salon_name: data.salons?.name,
+                    packages: data.salons?.packages
+                };
+                
+                setStylist(mappedStylist);
+                setLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch stylist", err);
+                setLoading(false);
+            }
+        }
+        loadStylist();
+    }, [id]);
+
+    const handleBooking = () => {
+        if (!user) {
+            navigate({ to: "/auth", search: { redirect: `/stylists/${id}` } });
+            return;
+        }
+
+        setBookingState("loading");
+        // Simulate a backend call
+        setTimeout(() => {
+            setBookingState("success");
+            setSelectedPackage(null);
+            setSelectedDate(null);
+            setSelectedTime(null);
+        }, 1500);
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+                <p className="text-[#C5A880] tracking-widest uppercase text-sm animate-pulse">Loading Stylist...</p>
+            </div>
+        );
+    }
+
+    if (!stylist) {
+        return (
+            <div className="min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center">
+                <h1 className="text-2xl font-light mb-4">Stylist Not Found</h1>
+                <Link to="/salons" className="text-[#C5A880] hover:underline">Back to Directory</Link>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-[#FAFAFA] text-[#1A1A1A] font-sans">
@@ -46,13 +98,13 @@ function StylistProfile() {
                     <div className="lg:col-span-7">
                         <div className="flex items-center gap-6 mb-8 border-b border-neutral-100 pb-8">
                             <div className="w-24 h-24 rounded-full overflow-hidden shrink-0">
-                                <img src={MOCK_STYLIST.profile_image} alt={MOCK_STYLIST.name} className="w-full h-full object-cover" />
+                                <img src={stylist.profile_image} alt={stylist.name} className="w-full h-full object-cover" />
                             </div>
                             <div>
-                                <h1 className="text-3xl font-medium">{MOCK_STYLIST.name}</h1>
-                                <p className="text-[#C5A880] mb-2">{MOCK_STYLIST.salon_name}</p>
+                                <h1 className="text-3xl font-medium">{stylist.name}</h1>
+                                <p className="text-[#C5A880] mb-2">{stylist.salon_name}</p>
                                 <div className="flex gap-4 text-sm text-[#1A1A1A]/70">
-                                    {Object.entries(MOCK_STYLIST.domain_ratings).slice(0,3).map(([domain, rating]) => (
+                                    {Object.entries(stylist.domain_ratings || {}).slice(0,3).map(([domain, rating]: any) => (
                                         <div key={domain} className="flex items-center gap-1">
                                             <Star className="w-3 h-3 fill-[#1A1A1A]" />
                                             <span>{rating} {domain}</span>
@@ -65,7 +117,7 @@ function StylistProfile() {
                         {/* Portfolio Grid */}
                         <h2 className="text-xl font-medium mb-6">Recent Work</h2>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            {MOCK_STYLIST.portfolio_images.map((img, idx) => (
+                            {stylist.portfolio_images?.map((img: string, idx: number) => (
                                 <div key={idx} className="aspect-[4/5] rounded-lg overflow-hidden">
                                     <img src={img} alt={`Work ${idx}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
                                 </div>
@@ -82,7 +134,7 @@ function StylistProfile() {
                             <div className="mb-8">
                                 <h3 className="text-sm font-medium uppercase tracking-widest text-[#C5A880] mb-4">Select Package</h3>
                                 <div className="space-y-3">
-                                    {MOCK_STYLIST.packages.map((pkg) => (
+                                    {stylist.packages?.map((pkg: any) => (
                                         <div 
                                             key={pkg.id} 
                                             onClick={() => setSelectedPackage(pkg.id)}
@@ -151,11 +203,18 @@ function StylistProfile() {
                                 )}
                             </div>
 
+                            {bookingState === "success" && (
+                                <div className="mb-4 p-4 bg-green-50 text-green-800 border border-green-200 rounded-xl text-sm">
+                                    Your booking request has been sent successfully! Our team will contact you shortly to confirm.
+                                </div>
+                            )}
+
                             <button 
-                                disabled={!selectedPackage || !selectedDate || !selectedTime}
+                                onClick={handleBooking}
+                                disabled={!selectedPackage || !selectedDate || !selectedTime || bookingState === "loading"}
                                 className="w-full bg-[#1A1A1A] text-white py-4 rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#1A1A1A]/90 transition-colors"
                             >
-                                Request Booking
+                                {bookingState === "loading" ? "Processing..." : "Request Booking"}
                             </button>
                         </div>
                     </div>

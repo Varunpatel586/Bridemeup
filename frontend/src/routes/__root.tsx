@@ -124,13 +124,19 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+import { ChatbotWidget } from "../components/site/ChatbotWidget";
+import { AuthProvider } from "../lib/AuthContext";
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
-    </QueryClientProvider>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+        <ChatbotWidget />
+      </QueryClientProvider>
+    </AuthProvider>
   );
 }

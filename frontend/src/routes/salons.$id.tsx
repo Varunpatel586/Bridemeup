@@ -30,7 +30,41 @@ const MOCK_SALON = {
 
 function SalonDetail() {
   const { id } = Route.useParams();
-  const [salon, setSalon] = useState(MOCK_SALON); // In real app, fetch /api/salons/{id}
+  const [salon, setSalon] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`http://localhost:8000/api/salons/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Not found");
+        return res.json();
+      })
+      .then((data) => {
+        setSalon(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch salon", err);
+        setLoading(false);
+      });
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+        <p className="text-[#C5A880] tracking-widest uppercase text-sm animate-pulse">Loading Profile...</p>
+      </div>
+    );
+  }
+
+  if (!salon) {
+    return (
+      <div className="min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center">
+        <h1 className="text-2xl font-light mb-4">Salon Not Found</h1>
+        <Link to="/salons" className="text-[#C5A880] hover:underline">Back to Directory</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#1A1A1A] font-sans">

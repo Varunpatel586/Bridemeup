@@ -3,6 +3,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { useEffect, useState } from "react";
 import { Star, MapPin } from "lucide-react";
+import * as HoverCard from "@radix-ui/react-hover-card";
 
 const MOCK_SALONS = [
     {
@@ -28,11 +29,29 @@ export const Route = createFileRoute("/salons")({
 });
 
 function SalonsDirectory() {
-  const [salons, setSalons] = useState(MOCK_SALONS);
+  const [salons, setSalons] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      // In real app, fetch /api/salons
+    fetch("http://localhost:8000/api/salons/")
+      .then((res) => res.json())
+      .then((data) => {
+        setSalons(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch salons", err);
+        setLoading(false);
+      });
   }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+        <p className="text-[#C5A880] tracking-widest uppercase text-sm animate-pulse">Loading Directory...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#1A1A1A] font-sans">
@@ -48,31 +67,49 @@ function SalonsDirectory() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {salons.map((salon) => (
-                <Link 
-                    key={salon.id} 
-                    to={`/salons/$id`} 
-                    params={{ id: salon.id }}
-                    className="group block bg-white border border-neutral-100 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300"
-                >
-                    <div className="aspect-[4/3] overflow-hidden relative">
-                        <img 
-                            src={salon.images[0]} 
-                            alt={salon.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 text-sm font-medium">
-                            <Star className="w-4 h-4 fill-[#C5A880] text-[#C5A880]" />
-                            {salon.rating} <span className="text-[#1A1A1A]/50">({salon.reviews_count})</span>
-                        </div>
+              <HoverCard.Root key={salon.id} openDelay={200} closeDelay={100}>
+                <HoverCard.Trigger asChild>
+                  <Link 
+                      to={`/salons/$id`} 
+                      params={{ id: salon.id }}
+                      className="group block bg-white border border-neutral-100 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300"
+                  >
+                      <div className="aspect-[4/3] overflow-hidden relative">
+                          <img 
+                              src={salon.images[0]} 
+                              alt={salon.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 text-sm font-medium">
+                              <Star className="w-4 h-4 fill-[#C5A880] text-[#C5A880]" />
+                              {salon.rating} <span className="text-[#1A1A1A]/50">({salon.reviews_count})</span>
+                          </div>
+                      </div>
+                      <div className="p-6">
+                          <h2 className="text-xl font-medium mb-2">{salon.name}</h2>
+                          <div className="flex items-center gap-2 text-[#1A1A1A]/60 text-sm">
+                              <MapPin className="w-4 h-4" />
+                              {salon.address}
+                          </div>
+                      </div>
+                  </Link>
+                </HoverCard.Trigger>
+                <HoverCard.Content side="right" sideOffset={15} align="start" className="z-50 w-72 bg-white rounded-xl shadow-2xl p-5 border border-plum/10 animate-in fade-in zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95">
+                  <div className="flex flex-col gap-2">
+                    <h3 className="font-serif italic text-xl text-plum">{salon.name}</h3>
+                    <p className="text-sm text-plum/70">{salon.address}</p>
+                    <div className="h-px bg-plum/5 my-2" />
+                    <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 fill-[#C5A880] text-[#C5A880]" />
+                        <span className="font-medium text-sm text-plum">{salon.rating}</span>
+                        <span className="text-sm text-plum/50">({salon.reviews_count} reviews)</span>
                     </div>
-                    <div className="p-6">
-                        <h2 className="text-xl font-medium mb-2">{salon.name}</h2>
-                        <div className="flex items-center gap-2 text-[#1A1A1A]/60 text-sm">
-                            <MapPin className="w-4 h-4" />
-                            {salon.address}
-                        </div>
-                    </div>
-                </Link>
+                    <p className="text-xs text-plum/60 mt-2">Top rated artists: Ananya Verma, Rohit Singh</p>
+                    <p className="text-xs font-semibold text-rosegold mt-1">Specialties: Bridal Makeup, Mehendi, Hairstyle</p>
+                    <p className="text-[10px] text-plum/40 mt-3 text-center uppercase tracking-widest">Click to view artists & book</p>
+                  </div>
+                </HoverCard.Content>
+              </HoverCard.Root>
             ))}
         </div>
       </main>

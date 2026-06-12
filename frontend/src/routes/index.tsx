@@ -35,7 +35,7 @@ function Index() {
       <main>
         <Hero />
         <AIPlannerShowcase />
-        <MasonryGallery />
+        <MasonryGallery limit={15} />
         <FeaturedArtists />
         <PackagesSection />
         <SuccessStories />

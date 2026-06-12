@@ -1,9 +1,19 @@
 import { motion } from "framer-motion";
-import { Link } from "@tanstack/react-router";
-import heroBride from "@/assets/hero-bride.jpg";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { WeddingCountdown } from "./WeddingCountdown";
+import { supabase } from "@/lib/supabase";
 
 export function Hero() {
+  const navigate = useNavigate();
+
+  const handleStartPlanning = async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data?.session) {
+      navigate({ to: '/salons' });
+    } else {
+      navigate({ to: '/auth', search: { redirect: '/salons' } });
+    }
+  };
   return (
     <header className="relative pt-12 pb-24 px-6 overflow-hidden">
       {/* subtle gradient wash */}
@@ -31,13 +41,13 @@ export function Hero() {
             inevitable.
           </p>
           <div className="flex flex-wrap gap-4 items-center">
-            <Link
-              to="/onboarding"
-              className="group px-8 py-4 bg-plum text-ivory rounded-full font-medium hover:ring-4 ring-plum/10 transition-all inline-flex items-center gap-2"
+            <button
+              onClick={handleStartPlanning}
+              className="group px-8 py-4 bg-plum text-ivory rounded-full font-medium hover:ring-4 ring-plum/10 transition-all inline-flex items-center gap-2 cursor-pointer"
             >
               Start Planning
               <span className="transition-transform group-hover:translate-x-1">→</span>
-            </Link>
+            </button>
             <WeddingCountdown />
           </div>
         </motion.div>
@@ -50,7 +60,7 @@ export function Hero() {
         >
           <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden ring-1 ring-plum/5 shadow-luxe">
             <img
-              src={heroBride}
+              src="/images/hero-bride.jpg"
               alt="Editorial portrait of a Delhi bride in ivory silk with champagne gold embroidery"
               width={1024}
               height={1280}

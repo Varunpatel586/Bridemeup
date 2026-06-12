@@ -1,15 +1,18 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/AuthContext";
 
 const navLinks = [
   { label: "The Planner", to: "/planner" },
-  { label: "Gallery", to: "/gallery" },
+  { label: "Explore", to: "/explore" },
+  { label: "Salons", to: "/salons" },
   { label: "Artists", to: "/discover" },
   { label: "Packages", to: "/packages" },
 ];
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -43,10 +46,10 @@ export function SiteHeader() {
           ))}
         </div>
         <Link
-          to="/auth"
+          to={user ? "/planner" : "/auth"}
           className="px-5 py-2.5 bg-plum text-ivory text-xs font-semibold rounded-full hover:bg-plum-light hover:shadow-luxe transition-all"
         >
-          Book Concierge
+          {user ? "My Concierge" : "Book Concierge"}
         </Link>
       </div>
     </nav>
