@@ -1,0 +1,13 @@
+{
+  "name": "bridemeup",
+  "version": "1.0.0",
+  "description": "Bridemeup Marketplace",
+  "scripts": {
+    "frontend": "cd frontend && npm run dev",
+    "backend": "cd backend && uvicorn main:app --reload",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
