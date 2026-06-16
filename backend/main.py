@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import analysis, salons, stylists
+from app.api import analysis, salons, stylists, chat
 
 app = FastAPI(title="Bridemeup API", description="Luxury Bridal Beauty Marketplace API")
 
@@ -17,7 +17,7 @@ app.add_middleware(
 app.include_router(salons.router)
 app.include_router(stylists.router)
 app.include_router(analysis.router)
-
+app.include_router(chat.router)
 @app.get("/")
 async def root():
     return {"message": "Welcome to Bridemeup API"}

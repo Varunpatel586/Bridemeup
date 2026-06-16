@@ -1,28 +1,66 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [chatHistory, setChatHistory] = useState([
     { role: "assistant", content: "Hi! I'm your AI bridal beauty concierge. How can I help you plan your perfect look today?" },
   ]);
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
 
-    setChatHistory([...chatHistory, { role: "user", content: message }]);
-    setMessage("");
+    const userMessage = message;
 
-    // Mock AI response
-    setTimeout(() => {
-      setChatHistory((prev) => [
-        ...prev,
-        { role: "assistant", content: "Thanks for sharing! I'm checking our network of top artists and salons for the best match..." },
-      ]);
-    }, 1000);
+    setChatHistory((prev) => [
+    ...prev,
+    { role: "user", content: userMessage },
+    ]);
+
+setMessage("");;
+
+   try {
+  const response = await fetch(
+    "http://127.0.0.1:8000/chat",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: userMessage,
+        history: chatHistory,
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  setChatHistory((prev) => [
+    ...prev,
+    {
+      role: "assistant",
+      content: data.response,
+    },
+  ]);
+} catch (error) {
+  console.error(error);
+
+  setChatHistory((prev) => [
+    ...prev,
+    {
+      role: "assistant",
+      content:
+        "Sorry, I'm having trouble connecting right now.",
+    },
+  ]);
+}
   };
 
   return (
@@ -66,10 +104,16 @@ export function ChatbotWidget() {
                       ? "bg-white border border-plum/5 text-plum rounded-tl-sm self-start"
                       : "bg-plum text-ivory rounded-tr-sm self-end"
                   }`}
+                  
                 >
                   {msg.content}
                 </div>
               ))}
+              {isTyping && (
+              <div className="max-w-[80%] p-3 rounded-2xl text-sm bg-white border border-plum/5 text-plum rounded-tl-sm self-start">
+              ShaadiGlow is typing...
+              </div>
+              )}
             </div>
 
             {/* Input Form */}
