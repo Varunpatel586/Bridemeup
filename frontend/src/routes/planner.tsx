@@ -130,6 +130,35 @@ function PlannerDashboard() {
                       <Send className="w-4 h-4" />
                   </button>
               </div>
+              
+              {/* Save Plan Button */}
+              {messages.length > 1 && (
+                  <div className="mt-4 flex justify-end">
+                      <button 
+                          onClick={async () => {
+                              try {
+                                  const { supabase } = await import("@/lib/supabase");
+                                  // Save the latest assistant response as the plan
+                                  const planContent = messages.filter(m => m.role === 'assistant').pop()?.content || "";
+                                  if (!planContent) return;
+                                  
+                                  const { error } = await supabase.from("wedding_plans").insert({
+                                      user_id: user.id,
+                                      plan_data: { content: planContent }
+                                  });
+                                  if (error) throw error;
+                                  alert("Plan saved to your dashboard!");
+                              } catch (e) {
+                                  console.error(e);
+                                  alert("Failed to save plan.");
+                              }
+                          }}
+                          className="text-sm font-medium border border-[#1A1A1A] text-[#1A1A1A] px-4 py-2 rounded-full hover:bg-[#1A1A1A] hover:text-white transition-colors"
+                      >
+                          Save Plan to Dashboard
+                      </button>
+                  </div>
+              )}
           </div>
       </main>
       <SiteFooter />

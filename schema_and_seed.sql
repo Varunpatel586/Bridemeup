@@ -1,6 +1,8 @@
 -- Schema definition for Bridemeup
 
 -- Clean up existing tables (if any, use with caution)
+DROP TABLE IF EXISTS public.appointments;
+DROP TABLE IF EXISTS public.wedding_plans;
 DROP TABLE IF EXISTS public.stylists;
 DROP TABLE IF EXISTS public.salons;
 
@@ -34,6 +36,29 @@ CREATE TABLE public.stylists (
 ALTER TABLE public.salons ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.stylists ENABLE ROW LEVEL SECURITY;
 
+-- 3. Create Wedding Plans Table
+CREATE TABLE public.wedding_plans (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    plan_data JSONB NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
+-- 4. Create Appointments Table
+CREATE TABLE public.appointments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    salon_id UUID REFERENCES public.salons(id) ON DELETE CASCADE,
+    stylist_id UUID REFERENCES public.stylists(id) ON DELETE CASCADE,
+    appointment_date TIMESTAMP WITH TIME ZONE NOT NULL,
+    status TEXT DEFAULT 'pending',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
+-- 5. Enable RLS
+ALTER TABLE public.wedding_plans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.appointments ENABLE ROW LEVEL SECURITY;
+
 -- 4. Create Public Read Policies
 -- We grant SELECT access to 'anon' and 'authenticated' roles.
 CREATE POLICY "Allow public read access on salons"
@@ -46,7 +71,20 @@ ON public.stylists
 FOR SELECT TO anon, authenticated
 USING (true);
 
--- 5. Seed Data
+-- 6. User Policies for new tables
+CREATE POLICY "Users can manage their own wedding plans"
+ON public.wedding_plans
+FOR ALL TO authenticated
+USING (auth.uid() = user_id)
+WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can manage their own appointments"
+ON public.appointments
+FOR ALL TO authenticated
+USING (auth.uid() = user_id)
+WITH CHECK (auth.uid() = user_id);
+
+-- 7. Seed Data
 DO $$
 DECLARE
     salon1_id UUID := gen_random_uuid();

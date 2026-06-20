@@ -55,20 +55,45 @@ function StylistProfile() {
         loadStylist();
     }, [id]);
 
-    const handleBooking = () => {
+    const handleBooking = async () => {
         if (!user) {
             navigate({ to: "/auth", search: { redirect: `/stylists/${id}` } });
             return;
         }
 
+        if (!selectedDate || !selectedTime) return;
+
         setBookingState("loading");
-        // Simulate a backend call
-        setTimeout(() => {
+        
+        try {
+            // Parse date and time into a single Date object
+            // Just using the year 2026 as placeholder for the mock dates
+            const currentYear = new Date().getFullYear();
+            const dateStr = `${selectedDate}, ${currentYear} ${selectedTime}`;
+            const appointmentDate = new Date(dateStr);
+
+            const { error } = await supabase.from("appointments").insert({
+                user_id: user.id,
+                salon_id: stylist.salon_id,
+                stylist_id: stylist.id,
+                appointment_date: appointmentDate.toISOString(),
+                status: "pending"
+            });
+            
+            if (error) throw error;
+            
             setBookingState("success");
-            setSelectedPackage(null);
-            setSelectedDate(null);
-            setSelectedTime(null);
-        }, 1500);
+            setTimeout(() => {
+                setBookingState("idle");
+                setSelectedPackage(null);
+                setSelectedDate(null);
+                setSelectedTime(null);
+            }, 3000);
+        } catch (error) {
+            console.error("Booking failed", error);
+            alert("Failed to book appointment.");
+            setBookingState("idle");
+        }
     };
 
     if (loading) {
@@ -211,7 +236,7 @@ function StylistProfile() {
 
                             <button 
                                 onClick={handleBooking}
-                                disabled={!selectedPackage || !selectedDate || !selectedTime || bookingState === "loading"}
+                                disabled={!selectedDate || !selectedTime || bookingState === "loading"}
                                 className="w-full bg-[#1A1A1A] text-white py-4 rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#1A1A1A]/90 transition-colors"
                             >
                                 {bookingState === "loading" ? "Processing..." : "Request Booking"}

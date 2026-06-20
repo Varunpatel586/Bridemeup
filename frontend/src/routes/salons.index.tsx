@@ -24,7 +24,7 @@ const MOCK_SALONS = [
     }
 ];
 
-export const Route = createFileRoute("/salons")({
+export const Route = createFileRoute("/salons/")({
   component: SalonsDirectory,
 });
 
@@ -33,16 +33,17 @@ function SalonsDirectory() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/salons/")
-      .then((res) => res.json())
-      .then((data) => {
-        setSalons(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch salons", err);
-        setLoading(false);
-      });
+    import("@/lib/supabase").then(({ supabase }) => {
+      supabase.from("salons").select("*")
+        .then(({ data, error }) => {
+          if (error) {
+            console.error("Failed to fetch salons", error);
+          } else {
+            setSalons(data || []);
+          }
+          setLoading(false);
+        });
+    });
   }, []);
 
   if (loading) {

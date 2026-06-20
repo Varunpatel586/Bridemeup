@@ -1,24 +1,42 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Webcam from "react-webcam";
 import { Camera, Upload, Sparkles, Send } from "lucide-react";
+import { useAuth } from "@/lib/AuthContext";
 
 export const Route = createFileRoute("/ai-analysis")({
-  component: AiAnalysisPage,
+    component: AiAnalysisPage,
 });
 
 function AiAnalysisPage() {
+    const { user, loading } = useAuth();
+    const navigate = useNavigate();
+
     const webcamRef = useRef<Webcam>(null);
     const [image, setImage] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [faceShape, setFaceShape] = useState<string | null>(null);
-    
+
     // Chat state
-    const [messages, setMessages] = useState<{role: string, content: string}[]>([]);
+    const [messages, setMessages] = useState<{ role: string, content: string }[]>([]);
     const [chatInput, setChatInput] = useState("");
     const [isChatLoading, setIsChatLoading] = useState(false);
+
+    useEffect(() => {
+        if (!loading && !user) {
+            navigate({ to: "/auth", search: { redirect: "/ai-analysis" } });
+        }
+    }, [user, loading, navigate]);
+
+    if (loading || !user) {
+        return (
+            <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+                <p className="text-[#C5A880] tracking-widest uppercase text-sm animate-pulse">Authenticating...</p>
+            </div>
+        );
+    }
 
     const capture = useCallback(() => {
         const imageSrc = webcamRef.current?.getScreenshot();
@@ -44,39 +62,74 @@ function AiAnalysisPage() {
     const processImage = async (base64Img: string) => {
         setIsProcessing(true);
         try {
-            // Mocking API call to backend /api/analysis/face
-            // In reality, you'd do: await fetch('http://localhost:8000/api/analysis/face', ...)
-            setTimeout(() => {
-                setFaceShape("Oval");
-                setIsProcessing(false);
-                setMessages([{ role: "assistant", content: "I've analyzed your facial structure and determined you have an elegant Oval face shape. How can I help you plan your bridal look?" }]);
-            }, 2500);
+            // Convert base64 to Blob to send as multipart/form-data
+            const response = await fetch(base64Img);
+            const blob = await response.blob();
+            
+            const formData = new FormData();
+            formData.append("file", blob, "image.jpg");
+
+            const res = await fetch("http://localhost:8000/api/analysis/face", {
+                method: "POST",
+                body: formData
+            });
+
+            if (!res.ok) throw new Error("Failed to process image");
+
+            const data = await res.json();
+            console.log("Backend response:", data);
+            
+            if (data.success) {
+                setFaceShape(data.face_shape);
+                setMessages([{ role: "assistant", content: data.recommendation }]);
+            } else {
+                setFaceShape("Unknown");
+                setMessages([{ role: "assistant", content: data.message || "I couldn't detect a face clearly. How can I help you plan your bridal look?" }]);
+            }
         } catch (error) {
             console.error(error);
+            setFaceShape("Unknown");
+            setMessages([{ role: "assistant", content: "There was an error analyzing the image. How can I help you plan your bridal look?" }]);
+        } finally {
             setIsProcessing(false);
         }
     };
 
     const sendChatMessage = async () => {
         if (!chatInput.trim() || !faceShape) return;
-        
+
         const newMessages = [...messages, { role: "user", content: chatInput }];
         setMessages(newMessages);
         setChatInput("");
         setIsChatLoading(true);
 
-        // Mock API call to backend /api/analysis/chat
-        setTimeout(() => {
-            setMessages([...newMessages, { role: "assistant", content: "Based on your Oval face shape, I recommend a soft glam look with slightly contoured cheekbones. Would you like me to recommend some specific artists from Lumière Artistry?" }]);
+        try {
+            const res = await fetch("http://localhost:8000/api/analysis/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    face_shape: faceShape,
+                    messages: newMessages
+                })
+            });
+
+            if (!res.ok) throw new Error("Failed to fetch");
+
+            const data = await res.json();
+            setMessages([...newMessages, { role: "assistant", content: data.response }]);
+        } catch (err) {
+            console.error(err);
+            setMessages([...newMessages, { role: "assistant", content: "Sorry, I am having trouble connecting to the neural network right now. Please try again later." }]);
+        } finally {
             setIsChatLoading(false);
-        }, 2000);
+        }
     };
 
     return (
         <div className="min-h-screen bg-[#FAFAFA] text-[#1A1A1A] font-sans flex flex-col">
             <SiteHeader />
             <main className="flex-1 pt-24 pb-8 px-6 max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-8">
-                
+
                 {/* Left: Camera / Display Area */}
                 <div className="flex-1 flex flex-col">
                     <div className="mb-6">
@@ -87,11 +140,11 @@ function AiAnalysisPage() {
                     </div>
 
                     <div className="bg-white border border-neutral-100 rounded-2xl p-4 flex-1 flex flex-col items-center justify-center min-h-[400px] relative overflow-hidden shadow-sm">
-                        
+
                         {!image && !isProcessing && (
                             <div className="w-full max-w-md flex flex-col items-center">
                                 <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-black mb-4">
-                                    <Webcam 
+                                    <Webcam
                                         audio={false}
                                         ref={webcamRef}
                                         screenshotFormat="image/jpeg"
@@ -106,7 +159,7 @@ function AiAnalysisPage() {
                                     </div>
                                 </div>
                                 <div className="flex gap-4 w-full">
-                                    <button 
+                                    <button
                                         onClick={capture}
                                         className="flex-1 bg-[#1A1A1A] text-white py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-[#1A1A1A]/90 transition-colors"
                                     >
@@ -135,7 +188,7 @@ function AiAnalysisPage() {
                                         <p className="text-xs text-white/60 uppercase tracking-wider mb-1">Detected Shape</p>
                                         <p className="text-xl font-serif text-[#C5A880]">{faceShape}</p>
                                     </div>
-                                    <button onClick={() => {setImage(null); setFaceShape(null); setMessages([])}} className="text-xs border border-white/20 px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors">
+                                    <button onClick={() => { setImage(null); setFaceShape(null); setMessages([]) }} className="text-xs border border-white/20 px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors">
                                         Retake
                                     </button>
                                 </div>
@@ -151,7 +204,7 @@ function AiAnalysisPage() {
                             <h3 className="font-medium text-[#1A1A1A]">Consultation Chat</h3>
                             <p className="text-xs text-[#1A1A1A]/60">Live session with AI Stylist</p>
                         </div>
-                        
+
                         <div className="flex-1 overflow-y-auto p-4 space-y-4">
                             {messages.map((msg, idx) => (
                                 <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -163,27 +216,27 @@ function AiAnalysisPage() {
                             {isChatLoading && (
                                 <div className="flex justify-start">
                                     <div className="bg-[#FAFAFA] border border-neutral-100 p-3 rounded-2xl rounded-bl-none text-sm flex gap-1">
-                                        <div className="w-1.5 h-1.5 bg-[#1A1A1A]/30 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
-                                        <div className="w-1.5 h-1.5 bg-[#1A1A1A]/30 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
-                                        <div className="w-1.5 h-1.5 bg-[#1A1A1A]/30 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+                                        <div className="w-1.5 h-1.5 bg-[#1A1A1A]/30 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                                        <div className="w-1.5 h-1.5 bg-[#1A1A1A]/30 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                                        <div className="w-1.5 h-1.5 bg-[#1A1A1A]/30 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                                     </div>
                                 </div>
                             )}
                         </div>
 
                         <div className="p-4 border-t border-neutral-100 bg-white">
-                            <form 
+                            <form
                                 onSubmit={(e) => { e.preventDefault(); sendChatMessage(); }}
                                 className="flex items-center gap-2"
                             >
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     value={chatInput}
                                     onChange={(e) => setChatInput(e.target.value)}
                                     placeholder="Ask for specific styles or packages..."
                                     className="flex-1 bg-[#FAFAFA] border border-neutral-200 rounded-full px-4 py-2.5 text-sm outline-none focus:border-[#C5A880] transition-colors"
                                 />
-                                <button 
+                                <button
                                     type="submit"
                                     disabled={!chatInput.trim() || isChatLoading}
                                     className="bg-[#1A1A1A] text-white p-2.5 rounded-full disabled:opacity-50 hover:bg-[#C5A880] transition-colors"

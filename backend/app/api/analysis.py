@@ -1,5 +1,6 @@
 from fastapi import APIRouter, File, UploadFile, Depends, HTTPException, Body
 from app.services.face_analysis import detect_face_shape, get_llm_recommendation
+from app.services.gemini_service import generate_chat_response
 from app.models.schemas import ChatRequest, ChatResponse
 import base64
 
@@ -29,7 +30,9 @@ async def analyze_face(file: UploadFile = File(None), image_base64: str = Body(N
     if face_shape in ["No face detected", "Unknown", "Error"]:
         return {"success": False, "message": face_shape}
         
-    return {"success": True, "face_shape": face_shape}
+    initial_recommendation = get_llm_recommendation(face_shape, [])
+        
+    return {"success": True, "face_shape": face_shape, "recommendation": initial_recommendation}
 
 
 @router.post("/chat", response_model=ChatResponse)
@@ -37,5 +40,16 @@ async def chat_with_stylist(request: ChatRequest):
     """
     Handles chat requests for the AI Bridal Consultant.
     """
-    recommendation = get_llm_recommendation(request.face_shape, request.messages)
+    if not request.messages:
+        return ChatResponse(response="No message provided.")
+        
+    last_message = request.messages[-1].content
+    
+    context_parts = [f"Client's face shape: {request.face_shape}"]
+    for m in request.messages[:-1]:
+        context_parts.append(f"{m.role.capitalize()}: {m.content}")
+        
+    context = "\n".join(context_parts)
+    
+    recommendation = generate_chat_response(last_message, context)
     return ChatResponse(response=recommendation)

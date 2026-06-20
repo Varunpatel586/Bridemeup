@@ -1,28 +1,51 @@
 import { useState } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/lib/AuthContext";
+import { useNavigate } from "@tanstack/react-router";
 
 export function ChatbotWidget() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([
     { role: "assistant", content: "Hi! I'm your AI bridal beauty concierge. How can I help you plan your perfect look today?" },
   ]);
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
 
-    setChatHistory([...chatHistory, { role: "user", content: message }]);
+    const newChatHistory = [...chatHistory, { role: "user", content: message }];
+    setChatHistory(newChatHistory);
     setMessage("");
 
-    // Mock AI response
-    setTimeout(() => {
-      setChatHistory((prev) => [
-        ...prev,
-        { role: "assistant", content: "Thanks for sharing! I'm checking our network of top artists and salons for the best match..." },
-      ]);
-    }, 1000);
+    try {
+        const res = await fetch("http://localhost:8000/api/analysis/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                face_shape: "Unknown", // General chat
+                messages: newChatHistory
+            })
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch");
+
+        const data = await res.json();
+        setChatHistory((prev) => [
+            ...prev,
+            { role: "assistant", content: data.response },
+        ]);
+    } catch (err) {
+        console.error(err);
+        setChatHistory((prev) => [
+            ...prev,
+            { role: "assistant", content: "Sorry, I am having trouble connecting to the neural network right now. Please try again later." },
+        ]);
+    }
   };
 
   return (
@@ -96,7 +119,13 @@ export function ChatbotWidget() {
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (!user) {
+            navigate({ to: "/auth", search: { redirect: window.location.pathname } });
+            return;
+          }
+          setIsOpen(!isOpen);
+        }}
         className="size-14 bg-plum text-ivory rounded-full shadow-lg flex items-center justify-center hover:bg-plum-light transition-colors"
         aria-label="Toggle Chat"
       >

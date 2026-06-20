@@ -9,24 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SalonsRouteImport } from './routes/salons'
 import { Route as PlannerRouteImport } from './routes/planner'
 import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AiAnalysisRouteImport } from './routes/ai-analysis'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SalonsIndexRouteImport } from './routes/salons.index'
 import { Route as StylistsIdRouteImport } from './routes/stylists.$id'
 import { Route as SalonsIdRouteImport } from './routes/salons.$id'
 
-const SalonsRoute = SalonsRouteImport.update({
-  id: '/salons',
-  path: '/salons',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PlannerRoute = PlannerRouteImport.update({
   id: '/planner',
   path: '/planner',
@@ -57,6 +53,11 @@ const DiscoverRoute = DiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -70,6 +71,11 @@ const AiAnalysisRoute = AiAnalysisRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalonsIndexRoute = SalonsIndexRouteImport.update({
+  id: '/salons/',
+  path: '/salons/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StylistsIdRoute = StylistsIdRouteImport.update({
@@ -87,44 +93,47 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai-analysis': typeof AiAnalysisRoute
   '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
   '/discover': typeof DiscoverRoute
   '/explore': typeof ExploreRoute
   '/gallery': typeof GalleryRoute
   '/onboarding': typeof OnboardingRoute
   '/packages': typeof PackagesRoute
   '/planner': typeof PlannerRoute
-  '/salons': typeof SalonsRouteWithChildren
   '/salons/$id': typeof SalonsIdRoute
   '/stylists/$id': typeof StylistsIdRoute
+  '/salons/': typeof SalonsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ai-analysis': typeof AiAnalysisRoute
   '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
   '/discover': typeof DiscoverRoute
   '/explore': typeof ExploreRoute
   '/gallery': typeof GalleryRoute
   '/onboarding': typeof OnboardingRoute
   '/packages': typeof PackagesRoute
   '/planner': typeof PlannerRoute
-  '/salons': typeof SalonsRouteWithChildren
   '/salons/$id': typeof SalonsIdRoute
   '/stylists/$id': typeof StylistsIdRoute
+  '/salons': typeof SalonsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ai-analysis': typeof AiAnalysisRoute
   '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
   '/discover': typeof DiscoverRoute
   '/explore': typeof ExploreRoute
   '/gallery': typeof GalleryRoute
   '/onboarding': typeof OnboardingRoute
   '/packages': typeof PackagesRoute
   '/planner': typeof PlannerRoute
-  '/salons': typeof SalonsRouteWithChildren
   '/salons/$id': typeof SalonsIdRoute
   '/stylists/$id': typeof StylistsIdRoute
+  '/salons/': typeof SalonsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -132,68 +141,65 @@ export interface FileRouteTypes {
     | '/'
     | '/ai-analysis'
     | '/auth'
+    | '/dashboard'
     | '/discover'
     | '/explore'
     | '/gallery'
     | '/onboarding'
     | '/packages'
     | '/planner'
-    | '/salons'
     | '/salons/$id'
     | '/stylists/$id'
+    | '/salons/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/ai-analysis'
     | '/auth'
+    | '/dashboard'
     | '/discover'
     | '/explore'
     | '/gallery'
     | '/onboarding'
     | '/packages'
     | '/planner'
-    | '/salons'
     | '/salons/$id'
     | '/stylists/$id'
+    | '/salons'
   id:
     | '__root__'
     | '/'
     | '/ai-analysis'
     | '/auth'
+    | '/dashboard'
     | '/discover'
     | '/explore'
     | '/gallery'
     | '/onboarding'
     | '/packages'
     | '/planner'
-    | '/salons'
     | '/salons/$id'
     | '/stylists/$id'
+    | '/salons/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AiAnalysisRoute: typeof AiAnalysisRoute
   AuthRoute: typeof AuthRoute
+  DashboardRoute: typeof DashboardRoute
   DiscoverRoute: typeof DiscoverRoute
   ExploreRoute: typeof ExploreRoute
   GalleryRoute: typeof GalleryRoute
   OnboardingRoute: typeof OnboardingRoute
   PackagesRoute: typeof PackagesRoute
   PlannerRoute: typeof PlannerRoute
-  SalonsRoute: typeof SalonsRouteWithChildren
   StylistsIdRoute: typeof StylistsIdRoute
+  SalonsIndexRoute: typeof SalonsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/salons': {
-      id: '/salons'
-      path: '/salons'
-      fullPath: '/salons'
-      preLoaderRoute: typeof SalonsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/planner': {
       id: '/planner'
       path: '/planner'
@@ -236,6 +242,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -257,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/salons/': {
+      id: '/salons/'
+      path: '/salons'
+      fullPath: '/salons/'
+      preLoaderRoute: typeof SalonsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/stylists/$id': {
       id: '/stylists/$id'
       path: '/stylists/$id'
@@ -274,29 +294,19 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface SalonsRouteChildren {
-  SalonsIdRoute: typeof SalonsIdRoute
-}
-
-const SalonsRouteChildren: SalonsRouteChildren = {
-  SalonsIdRoute: SalonsIdRoute,
-}
-
-const SalonsRouteWithChildren =
-  SalonsRoute._addFileChildren(SalonsRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AiAnalysisRoute: AiAnalysisRoute,
   AuthRoute: AuthRoute,
+  DashboardRoute: DashboardRoute,
   DiscoverRoute: DiscoverRoute,
   ExploreRoute: ExploreRoute,
   GalleryRoute: GalleryRoute,
   OnboardingRoute: OnboardingRoute,
   PackagesRoute: PackagesRoute,
   PlannerRoute: PlannerRoute,
-  SalonsRoute: SalonsRouteWithChildren,
   StylistsIdRoute: StylistsIdRoute,
+  SalonsIndexRoute: SalonsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

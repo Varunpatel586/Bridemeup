@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
 
 const navLinks = [
+  { label: "AI Analysis", to: "/ai-analysis" },
   { label: "The Planner", to: "/planner" },
   { label: "Explore", to: "/explore" },
   { label: "Salons", to: "/salons" },
@@ -46,10 +47,10 @@ export function SiteHeader() {
           ))}
         </div>
         <Link
-          to={user ? "/planner" : "/auth"}
+          to={user ? "/dashboard" : "/auth"}
           className="px-5 py-2.5 bg-plum text-ivory text-xs font-semibold rounded-full hover:bg-plum-light hover:shadow-luxe transition-all"
         >
-          {user ? "My Concierge" : "Book Concierge"}
+          {user ? "Dashboard" : "Book Concierge"}
         </Link>
       </div>
     </nav>
