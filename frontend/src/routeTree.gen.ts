@@ -84,9 +84,9 @@ const StylistsIdRoute = StylistsIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const SalonsIdRoute = SalonsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => SalonsRoute,
+  id: '/salons/$id',
+  path: '/salons/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -194,6 +194,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PackagesRoute: typeof PackagesRoute
   PlannerRoute: typeof PlannerRoute
+  SalonsIdRoute: typeof SalonsIdRoute
   StylistsIdRoute: typeof StylistsIdRoute
   SalonsIndexRoute: typeof SalonsIndexRoute
 }
@@ -286,10 +287,10 @@ declare module '@tanstack/react-router' {
     }
     '/salons/$id': {
       id: '/salons/$id'
-      path: '/$id'
+      path: '/salons/$id'
       fullPath: '/salons/$id'
       preLoaderRoute: typeof SalonsIdRouteImport
-      parentRoute: typeof SalonsRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -305,6 +306,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PackagesRoute: PackagesRoute,
   PlannerRoute: PlannerRoute,
+  SalonsIdRoute: SalonsIdRoute,
   StylistsIdRoute: StylistsIdRoute,
   SalonsIndexRoute: SalonsIndexRoute,
 }
