@@ -51,5 +51,5 @@ async def chat_with_stylist(request: ChatRequest):
         
     context = "\n".join(context_parts)
     
-    recommendation = generate_chat_response(last_message, context)
+    recommendation = generate_chat_response(last_message, context, request.user_name)
     return ChatResponse(response=recommendation)

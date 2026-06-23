@@ -1,9 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { useAuth } from "@/lib/AuthContext";
 import { useEffect, useState } from "react";
-import { Calendar, FileText, Clock } from "lucide-react";
+import { Calendar, FileText, Clock, User, Save, LogOut } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
@@ -11,12 +11,21 @@ export const Route = createFileRoute("/dashboard")({
 
 function DashboardPage() {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState<any[]>([]);
   const [weddingPlans, setWeddingPlans] = useState<any[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
 
+  const [fullName, setFullName] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
   useEffect(() => {
     if (!user) return;
+
+    if (user.user_metadata?.full_name) {
+      setFullName(user.user_metadata.full_name);
+    }
 
     import("@/lib/supabase").then(async ({ supabase }) => {
       // Fetch appointments
@@ -47,6 +56,33 @@ function DashboardPage() {
     });
   }, [user]);
 
+  const handleUpdateProfile = async () => {
+    setSaving(true);
+    setMessage("");
+    try {
+      const { supabase } = await import("@/lib/supabase");
+      const { error } = await supabase.auth.updateUser({
+        data: { full_name: fullName },
+      });
+      if (error) throw error;
+      setMessage("Profile updated successfully.");
+    } catch (e) {
+      setMessage("Failed to update profile.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const { supabase } = await import("@/lib/supabase");
+      await supabase.auth.signOut();
+      navigate({ to: "/" });
+    } catch (e) {
+      console.error("Logout failed", e);
+    }
+  };
+
   if (loading || dataLoading) {
     return (
       <div className="min-h-[100dvh] bg-[#FAFAFA] flex items-center justify-center">
@@ -69,12 +105,54 @@ function DashboardPage() {
   return (
     <div className="min-h-[100dvh] bg-[#FAFAFA] text-[#1A1A1A] font-sans flex flex-col">
       <SiteHeader />
-      <main className="flex-1 pt-24 pb-16 px-6 max-w-7xl mx-auto w-full">
-        <div className="mb-12">
-          <h1 className="text-4xl font-light mb-2">Welcome back.</h1>
-          <p className="text-[#1A1A1A]/60">
-            Manage your upcoming bridal appointments and view your saved neural wedding plans.
-          </p>
+      <main className="flex-1 pt-5 pb-16 px-6 max-w-7xl mx-auto w-full h-full">
+        {/* Profile Section */}
+        <div className="mb-16 bg-white text-[#1A1A1A] border border-neutral-100 rounded-[2rem] p-8 md:p-12 shadow-sm flex flex-col md:flex-row gap-12 items-center justify-center max-w-5xl mx-auto relative overflow-hidden">
+          <div className="flex flex-col items-center text-center md:w-1/3 relative z-10">
+            <div className="w-28 h-28 bg-[#C5A880]/10 border border-[#C5A880]/20 rounded-full flex items-center justify-center shrink-0 mb-5">
+              <User className="w-12 h-12 text-[#C5A880]" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-serif italic text-pretty leading-tight">{user.user_metadata?.full_name || 'Your Profile'}</h1>
+              <p className="text-sm text-[#1A1A1A]/60 mt-2 tracking-wide">{user.email}</p>
+            </div>
+          </div>
+
+          <div className="flex-1 w-full max-w-xl space-y-6 relative z-10 bg-neutral-50/50 p-8 rounded-3xl border border-neutral-100">
+            <div>
+              <label className="block text-xs uppercase tracking-widest text-[#1A1A1A]/70 mb-3 font-medium">Display Name</label>
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Enter your full name"
+                className="w-full bg-white border border-neutral-200 text-[#1A1A1A] rounded-xl px-5 py-4 outline-none focus:border-[#C5A880] transition-all placeholder:text-[#1A1A1A]/30 shadow-sm"
+              />
+            </div>
+
+            {message && (
+              <p className={`text-sm ${message.includes("Failed") ? "text-red-500" : "text-green-600"}`}>
+                {message}
+              </p>
+            )}
+
+            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+              <button
+                onClick={handleUpdateProfile}
+                disabled={saving}
+                className="flex-1 bg-[#1A1A1A] text-white font-semibold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-[#1A1A1A]/90 transition-all disabled:opacity-50 shadow-sm"
+              >
+                <Save className="w-4 h-4" /> {saving ? "Saving..." : "Update Profile"}
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="flex-1 border border-red-200 text-red-600 py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-red-50 transition-all"
+              >
+                <LogOut className="w-4 h-4" /> Sign Out
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">

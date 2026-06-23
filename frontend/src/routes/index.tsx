@@ -39,6 +39,7 @@ function Index() {
         <FeaturedArtists />
         <PackagesSection />
         <SuccessStories />
+        <SiteFooter />
       </main>
     </div>
   );

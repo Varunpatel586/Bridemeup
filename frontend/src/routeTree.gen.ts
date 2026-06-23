@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PlannerRouteImport } from './routes/planner'
 import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -24,11 +23,6 @@ import { Route as SalonsIndexRouteImport } from './routes/salons.index'
 import { Route as StylistsIdRouteImport } from './routes/stylists.$id'
 import { Route as SalonsIdRouteImport } from './routes/salons.$id'
 
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PlannerRoute = PlannerRouteImport.update({
   id: '/planner',
   path: '/planner',
@@ -106,7 +100,6 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/packages': typeof PackagesRoute
   '/planner': typeof PlannerRoute
-  '/profile': typeof ProfileRoute
   '/salons/$id': typeof SalonsIdRoute
   '/stylists/$id': typeof StylistsIdRoute
   '/salons/': typeof SalonsIndexRoute
@@ -122,7 +115,6 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/packages': typeof PackagesRoute
   '/planner': typeof PlannerRoute
-  '/profile': typeof ProfileRoute
   '/salons/$id': typeof SalonsIdRoute
   '/stylists/$id': typeof StylistsIdRoute
   '/salons': typeof SalonsIndexRoute
@@ -139,7 +131,6 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/packages': typeof PackagesRoute
   '/planner': typeof PlannerRoute
-  '/profile': typeof ProfileRoute
   '/salons/$id': typeof SalonsIdRoute
   '/stylists/$id': typeof StylistsIdRoute
   '/salons/': typeof SalonsIndexRoute
@@ -157,7 +148,6 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/packages'
     | '/planner'
-    | '/profile'
     | '/salons/$id'
     | '/stylists/$id'
     | '/salons/'
@@ -173,7 +163,6 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/packages'
     | '/planner'
-    | '/profile'
     | '/salons/$id'
     | '/stylists/$id'
     | '/salons'
@@ -189,7 +178,6 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/packages'
     | '/planner'
-    | '/profile'
     | '/salons/$id'
     | '/stylists/$id'
     | '/salons/'
@@ -206,7 +194,6 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PackagesRoute: typeof PackagesRoute
   PlannerRoute: typeof PlannerRoute
-  ProfileRoute: typeof ProfileRoute
   SalonsIdRoute: typeof SalonsIdRoute
   StylistsIdRoute: typeof StylistsIdRoute
   SalonsIndexRoute: typeof SalonsIndexRoute
@@ -214,13 +201,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/planner': {
       id: '/planner'
       path: '/planner'
@@ -326,7 +306,6 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PackagesRoute: PackagesRoute,
   PlannerRoute: PlannerRoute,
-  ProfileRoute: ProfileRoute,
   SalonsIdRoute: SalonsIdRoute,
   StylistsIdRoute: StylistsIdRoute,
   SalonsIndexRoute: SalonsIndexRoute,

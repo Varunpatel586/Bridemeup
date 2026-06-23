@@ -49,6 +49,7 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     face_shape: str
     messages: List[ChatMessage]
+    user_name: Optional[str] = None
 
 class ChatResponse(BaseModel):
     response: str

@@ -21,6 +21,7 @@ function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,6 +38,11 @@ function AuthPage() {
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              full_name: username,
+            },
+          },
         });
         if (error) throw error;
         // User created, Supabase might automatically sign them in or require email verification.
@@ -76,6 +82,21 @@ function AuthPage() {
           </div>
 
           <form onSubmit={handleAuth} className="space-y-4">
+            {isSignUp && (
+              <div>
+                <label className="block text-xs font-semibold text-plum mb-1 uppercase tracking-widest">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full px-4 py-3 bg-[#FAFAFA] border border-plum/10 rounded-xl focus:outline-none focus:ring-1 focus:ring-plum text-sm"
+                  placeholder="Your Name"
+                />
+              </div>
+            )}
             <div>
               <label className="block text-xs font-semibold text-plum mb-1 uppercase tracking-widest">
                 Email
