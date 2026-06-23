@@ -164,7 +164,8 @@ Rules:
 - MAX 2-3 short sentences per reply
 - No essays, no walls of text
 - Always end on a positive, empowering note
-- Make her feel like the main character on her big day 👑"""
+- Make her feel like the main character on her big day 👑
+- ALWAYS use Indian Rupees (₹) instead of dollars ($). Never mention dollars or USD."""
 
     if context:
         prompt = f"{system_prompt}\n\nContext: {context}\n\nUser message: {message}\n\nResponse:"
