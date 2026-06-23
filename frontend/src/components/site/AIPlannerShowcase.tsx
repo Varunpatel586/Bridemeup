@@ -6,10 +6,26 @@ const events = ["Mehendi", "Haldi", "Sangeet", "Wedding", "Reception"];
 const budgets = ["₹50k", "₹1L", "₹3L", "₹5L+"];
 
 const milestones = [
-  { phase: "90 days", title: "Skincare Foundation", detail: "Begin Vitamin C + retinol cycle, book trial artist" },
-  { phase: "60 days", title: "Hair & Body Prep", detail: "Hair spa series, dietary protocol, jewelry trials" },
-  { phase: "30 days", title: "Final Trials", detail: "Lock makeup look, final tailoring, deep cleanse facial" },
-  { phase: "7 days", title: "The Glow", detail: "Hydration mist, mani-pedi, restful sleep schedule" },
+  {
+    phase: "90 days",
+    title: "Skincare Foundation",
+    detail: "Begin Vitamin C + retinol cycle, book trial artist",
+  },
+  {
+    phase: "60 days",
+    title: "Hair & Body Prep",
+    detail: "Hair spa series, dietary protocol, jewelry trials",
+  },
+  {
+    phase: "30 days",
+    title: "Final Trials",
+    detail: "Lock makeup look, final tailoring, deep cleanse facial",
+  },
+  {
+    phase: "7 days",
+    title: "The Glow",
+    detail: "Hydration mist, mani-pedi, restful sleep schedule",
+  },
 ];
 
 export function AIPlannerShowcase() {
@@ -17,7 +33,10 @@ export function AIPlannerShowcase() {
   const [activeBudget, setActiveBudget] = useState("₹3L");
 
   return (
-    <section className="py-24 px-6 bg-ivory" id="planner">
+    <section
+      className="min-h-[100dvh] flex items-center px-6 bg-ivory snap-start snap-always py-16"
+      id="planner"
+    >
       <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-16 items-start">
         <div className="lg:col-span-5">
           <p className="eyebrow text-rosegold mb-4">The Neural Planner</p>
@@ -26,8 +45,8 @@ export function AIPlannerShowcase() {
           </h2>
           <p className="text-plum/70 leading-relaxed mb-8 max-w-[44ch]">
             Tell us your wedding date, your events, and your budget. Our AI generates a granular
-            90/60/30/7-day protocol — skincare, hair, nails, trials, and artist pairings — tuned
-            to your skin, face shape, and venue lighting.
+            90/60/30/7-day protocol — skincare, hair, nails, trials, and artist pairings — tuned to
+            your skin, face shape, and venue lighting.
           </p>
 
           <div className="space-y-6">
@@ -115,7 +134,9 @@ export function AIPlannerShowcase() {
                   transition={{ delay: i * 0.12 }}
                   className="grid grid-cols-[80px_1fr] gap-4 p-4 rounded-xl hover:bg-pearl transition-colors group cursor-pointer"
                 >
-                  <div className="font-mono text-xs text-rosegold font-semibold pt-1">{m.phase}</div>
+                  <div className="font-mono text-xs text-rosegold font-semibold pt-1">
+                    {m.phase}
+                  </div>
                   <div>
                     <p className="font-medium text-plum group-hover:text-rosegold transition-colors">
                       {m.title}

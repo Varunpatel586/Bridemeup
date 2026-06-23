@@ -7,11 +7,14 @@ export const Route = createFileRoute("/discover")({
   head: () => ({
     meta: [
       { title: "Discover Artists — ShaadiGlow AI" },
-      { name: "description", content: "Browse Delhi's top bridal makeup artists, hairstylists, and mehendi specialists." },
+      {
+        name: "description",
+        content: "Browse Delhi's top bridal makeup artists, hairstylists, and mehendi specialists.",
+      },
     ],
   }),
   component: () => (
-    <div className="min-h-screen bg-ivory text-plum">
+    <div className="min-h-[100dvh] bg-ivory text-plum">
       <SiteHeader />
       <FeaturedArtists />
       <SiteFooter />

@@ -9,13 +9,13 @@ export function Hero() {
   const handleStartPlanning = async () => {
     const { data } = await supabase.auth.getSession();
     if (data?.session) {
-      navigate({ to: '/salons' });
+      navigate({ to: "/salons" });
     } else {
-      navigate({ to: '/auth', search: { redirect: '/salons' } });
+      navigate({ to: "/auth", search: { redirect: "/salons" } });
     }
   };
   return (
-    <header className="relative pt-12 pb-24 px-6 overflow-hidden">
+    <header className="relative min-h-[100dvh] flex items-center px-6 overflow-hidden snap-start snap-always pt-00">
       {/* subtle gradient wash */}
       <div className="absolute inset-0 bg-gradient-to-b from-blush/30 via-ivory to-ivory pointer-events-none" />
       <div className="absolute top-40 -right-32 w-96 h-96 rounded-full bg-rosegold/10 blur-3xl pointer-events-none" />
@@ -36,8 +36,8 @@ export function Hero() {
             Planned by AI.
           </h1>
           <p className="max-w-[42ch] text-lg text-plum/70 leading-relaxed mb-10 text-pretty">
-            The hush of dawn, the scent of rose petals, and a flawless timeline. Delhi's premier
-            AI bridal beauty concierge — for the modern bride who wants every detail to feel
+            The hush of dawn, the scent of rose petals, and a flawless timeline. Delhi's premier AI
+            bridal beauty concierge — for the modern bride who wants every detail to feel
             inevitable.
           </p>
           <div className="flex flex-wrap gap-4 items-center">
@@ -58,12 +58,12 @@ export function Hero() {
           transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1], delay: 0.15 }}
           className="relative"
         >
-          <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden ring-1 ring-plum/5 shadow-luxe">
+          <div className="relative w-full h-[65vh] max-h-[600px] rounded-2xl overflow-hidden ring-1 ring-plum/5 shadow-luxe">
             <img
               src="/images/hero-bride.jpg"
               alt="Editorial portrait of a Delhi bride in ivory silk with champagne gold embroidery"
               width={1024}
-              height={1280}
+              height={1000}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-plum/30 via-transparent to-transparent" />

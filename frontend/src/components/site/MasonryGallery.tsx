@@ -17,16 +17,53 @@ const categories = [
 ];
 
 export type Item =
-  | { type: "image"; src: string; tag: string; alt: string; aspect: string; artistId?: string; salonId?: string }
+  | {
+      type: "image";
+      src: string;
+      tag: string;
+      alt: string;
+      aspect: string;
+      artistId?: string;
+      salonId?: string;
+    }
   | { type: "promo" }
-  | { type: "artist"; src: string; name: string; specialty: string; match: number; rating: number; reviews: number }
+  | {
+      type: "artist";
+      src: string;
+      name: string;
+      specialty: string;
+      match: number;
+      rating: number;
+      reviews: number;
+    }
   | { type: "quote" };
 
 const baseItems: Item[] = [
-  { type: "image", src: "/images/gallery-embroidery.jpg", tag: "Couture Detail", alt: "Gold zardozi embroidery", aspect: "aspect-[2/3]", artistId: "artist-1" },
+  {
+    type: "image",
+    src: "/images/gallery-embroidery.jpg",
+    tag: "Couture Detail",
+    alt: "Gold zardozi embroidery",
+    aspect: "aspect-[2/3]",
+    artistId: "artist-1",
+  },
   { type: "promo" },
-  { type: "image", src: "/images/gallery-makeup.jpg", tag: "The Look", alt: "Modern minimalist bridal makeup", aspect: "aspect-square", salonId: "salon-1" },
-  { type: "image", src: "/images/gallery-mandap.jpg", tag: "Decor Muse", alt: "Floral mandap with roses and jasmine", aspect: "aspect-[3/4]", salonId: "salon-2" },
+  {
+    type: "image",
+    src: "/images/gallery-makeup.jpg",
+    tag: "The Look",
+    alt: "Modern minimalist bridal makeup",
+    aspect: "aspect-square",
+    salonId: "salon-1",
+  },
+  {
+    type: "image",
+    src: "/images/gallery-mandap.jpg",
+    tag: "Decor Muse",
+    alt: "Floral mandap with roses and jasmine",
+    aspect: "aspect-[3/4]",
+    salonId: "salon-2",
+  },
   {
     type: "artist",
     src: "/images/artist-1.jpg",
@@ -36,38 +73,127 @@ const baseItems: Item[] = [
     rating: 4.9,
     reviews: 120,
   },
-  { type: "image", src: "/images/gallery-mehendi.jpg", tag: "Mehendi", alt: "Bridal mehendi henna design", aspect: "aspect-[3/4]", artistId: "artist-2" },
-  { type: "image", src: "/images/hero-bride.jpg", tag: "Portrait", alt: "Editorial bride portrait", aspect: "aspect-[4/5]", artistId: "artist-1" },
+  {
+    type: "image",
+    src: "/images/gallery-mehendi.jpg",
+    tag: "Mehendi",
+    alt: "Bridal mehendi henna design",
+    aspect: "aspect-[3/4]",
+    artistId: "artist-2",
+  },
+  {
+    type: "image",
+    src: "/images/hero-bride.jpg",
+    tag: "Portrait",
+    alt: "Editorial bride portrait",
+    aspect: "aspect-[4/5]",
+    artistId: "artist-1",
+  },
   { type: "quote" },
-  { type: "image", src: "/images/gallery-reception.jpg", tag: "Reception", alt: "Soft blush bridal reception fabric", aspect: "aspect-[2/3]", salonId: "salon-1" },
-  { type: "image", src: "/images/gallery-haldi.jpg", tag: "Haldi", alt: "Bride in haldi ceremony", aspect: "aspect-[3/4]", artistId: "artist-2" },
-  { type: "image", src: "/images/gallery-couple.jpg", tag: "Vows", alt: "Couple at Delhi wedding", aspect: "aspect-[4/3]", salonId: "salon-2" },
+  {
+    type: "image",
+    src: "/images/gallery-reception.jpg",
+    tag: "Reception",
+    alt: "Soft blush bridal reception fabric",
+    aspect: "aspect-[2/3]",
+    salonId: "salon-1",
+  },
+  {
+    type: "image",
+    src: "/images/gallery-haldi.jpg",
+    tag: "Haldi",
+    alt: "Bride in haldi ceremony",
+    aspect: "aspect-[3/4]",
+    artistId: "artist-2",
+  },
+  {
+    type: "image",
+    src: "/images/gallery-couple.jpg",
+    tag: "Vows",
+    alt: "Couple at Delhi wedding",
+    aspect: "aspect-[4/3]",
+    salonId: "salon-2",
+  },
 ];
 
 const defaultItems: Item[] = [
   ...baseItems,
-  { type: "image", src: "/images/gallery-makeup.jpg", tag: "Glamour", alt: "Evening makeup", aspect: "aspect-[4/5]", artistId: "artist-1" },
-  { type: "image", src: "/images/hero-bride.jpg", tag: "Details", alt: "Jewelry details", aspect: "aspect-square", salonId: "salon-1" },
-  { type: "image", src: "/images/gallery-embroidery.jpg", tag: "Traditional", alt: "Red lehenga", aspect: "aspect-[3/4]", artistId: "artist-2" },
-  { type: "image", src: "/images/gallery-mandap.jpg", tag: "Setup", alt: "Outdoor setup", aspect: "aspect-[4/3]", salonId: "salon-2" },
-  { type: "image", src: "/images/gallery-mehendi.jpg", tag: "Art", alt: "Hand art", aspect: "aspect-[2/3]", artistId: "artist-1" },
-  { type: "image", src: "/images/gallery-couple.jpg", tag: "Moments", alt: "Candid moments", aspect: "aspect-[3/4]", salonId: "salon-1" },
-  { type: "image", src: "/images/gallery-haldi.jpg", tag: "Vibrant", alt: "Yellow themes", aspect: "aspect-[4/5]", artistId: "artist-2" },
+  {
+    type: "image",
+    src: "/images/gallery-makeup.jpg",
+    tag: "Glamour",
+    alt: "Evening makeup",
+    aspect: "aspect-[4/5]",
+    artistId: "artist-1",
+  },
+  {
+    type: "image",
+    src: "/images/hero-bride.jpg",
+    tag: "Details",
+    alt: "Jewelry details",
+    aspect: "aspect-square",
+    salonId: "salon-1",
+  },
+  {
+    type: "image",
+    src: "/images/gallery-embroidery.jpg",
+    tag: "Traditional",
+    alt: "Red lehenga",
+    aspect: "aspect-[3/4]",
+    artistId: "artist-2",
+  },
+  {
+    type: "image",
+    src: "/images/gallery-mandap.jpg",
+    tag: "Setup",
+    alt: "Outdoor setup",
+    aspect: "aspect-[4/3]",
+    salonId: "salon-2",
+  },
+  {
+    type: "image",
+    src: "/images/gallery-mehendi.jpg",
+    tag: "Art",
+    alt: "Hand art",
+    aspect: "aspect-[2/3]",
+    artistId: "artist-1",
+  },
+  {
+    type: "image",
+    src: "/images/gallery-couple.jpg",
+    tag: "Moments",
+    alt: "Candid moments",
+    aspect: "aspect-[3/4]",
+    salonId: "salon-1",
+  },
+  {
+    type: "image",
+    src: "/images/gallery-haldi.jpg",
+    tag: "Vibrant",
+    alt: "Yellow themes",
+    aspect: "aspect-[4/5]",
+    artistId: "artist-2",
+  },
 ];
 
-export function MasonryGallery({ limit, dynamicItems }: { limit?: number, dynamicItems?: Item[] }) {
+export function MasonryGallery({ limit, dynamicItems }: { limit?: number; dynamicItems?: Item[] }) {
   const [active, setActive] = useState("All Moods");
 
   const sourceItems = dynamicItems && dynamicItems.length > 0 ? dynamicItems : defaultItems;
   const displayItems = limit ? sourceItems.slice(0, limit) : sourceItems;
 
   return (
-    <section className="py-24 px-6 bg-ivory" id="gallery">
+    <section
+      className="min-h-[100dvh] py-16 px-6 bg-ivory snap-start snap-always flex items-center"
+      id="gallery"
+    >
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
           <div className="max-w-xl">
             <p className="eyebrow text-rosegold mb-3">Visual Muse</p>
-            <h2 className="text-4xl md:text-5xl font-serif italic text-plum mb-4">Discover your aesthetic.</h2>
+            <h2 className="text-4xl md:text-5xl font-serif italic text-plum mb-4">
+              Discover your aesthetic.
+            </h2>
             <p className="text-plum/60 leading-relaxed">
               A curated world of Delhi couture. Our AI learns your taste with every save and
               translates it into your personal beauty DNA.
@@ -78,10 +204,11 @@ export function MasonryGallery({ limit, dynamicItems }: { limit?: number, dynami
               <button
                 key={c}
                 onClick={() => setActive(c)}
-                className={`px-4 py-2 rounded-full text-[11px] font-medium transition-all ${active === c
+                className={`px-4 py-2 rounded-full text-[11px] font-medium transition-all ${
+                  active === c
                     ? "bg-plum text-ivory border border-plum"
                     : "border border-plum/10 text-plum/70 hover:border-plum/30 hover:bg-pearl"
-                  }`}
+                }`}
               >
                 {c}
               </button>
@@ -99,8 +226,8 @@ export function MasonryGallery({ limit, dynamicItems }: { limit?: number, dynami
               transition={{ duration: 0.6, delay: (i % 4) * 0.08, ease: [0.19, 1, 0.22, 1] }}
               className="break-inside-avoid"
             >
-              {item.type === "image" && (
-                item.artistId || item.salonId ? (
+              {item.type === "image" &&
+                (item.artistId || item.salonId ? (
                   <Link
                     to={item.artistId ? "/stylists/$id" : "/salons/$id"}
                     params={item.artistId ? { id: item.artistId } : { id: item.salonId! }}
@@ -120,7 +247,7 @@ export function MasonryGallery({ limit, dynamicItems }: { limit?: number, dynami
                       <div className="flex items-center justify-between w-full">
                         <p className="eyebrow text-ivory">{item.tag}</p>
                         <span className="px-3 py-1 rounded-full bg-ivory/90 backdrop-blur flex items-center justify-center text-plum text-[10px] font-bold uppercase">
-                          Book {item.artistId ? 'Artist' : 'Salon'}
+                          Book {item.artistId ? "Artist" : "Salon"}
                         </span>
                       </div>
                     </div>
@@ -146,8 +273,7 @@ export function MasonryGallery({ limit, dynamicItems }: { limit?: number, dynami
                       </div>
                     </div>
                   </div>
-                )
-              )}
+                ))}
 
               {item.type === "promo" && (
                 <div className="p-8 bg-plum text-ivory rounded-xl shadow-luxe">
@@ -203,10 +329,20 @@ export function MasonryGallery({ limit, dynamicItems }: { limit?: number, dynami
                   </div>
                   <div className="grid grid-cols-2 gap-2 mb-4">
                     <div className="h-16 bg-pearl rounded-md overflow-hidden">
-                      <img src="/images/gallery-makeup.jpg" alt="" loading="lazy" className="w-full h-full object-cover" />
+                      <img
+                        src="/images/gallery-makeup.jpg"
+                        alt=""
+                        loading="lazy"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div className="h-16 bg-pearl rounded-md overflow-hidden">
-                      <img src="/images/gallery-embroidery.jpg" alt="" loading="lazy" className="w-full h-full object-cover" />
+                      <img
+                        src="/images/gallery-embroidery.jpg"
+                        alt=""
+                        loading="lazy"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   </div>
                   <Link

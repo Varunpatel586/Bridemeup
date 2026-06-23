@@ -25,9 +25,7 @@ export function SiteHeader() {
   return (
     <nav
       className={`sticky top-0 z-50 w-full transition-all duration-500 ${
-        scrolled
-          ? "bg-ivory/85 backdrop-blur-md border-b border-plum/5"
-          : "bg-transparent"
+        scrolled ? "bg-ivory/85 backdrop-blur-md border-b border-plum/5" : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -47,10 +45,10 @@ export function SiteHeader() {
           ))}
         </div>
         <Link
-          to={user ? "/dashboard" : "/auth"}
+          to={user ? "/profile" : "/auth"}
           className="px-5 py-2.5 bg-plum text-ivory text-xs font-semibold rounded-full hover:bg-plum-light hover:shadow-luxe transition-all"
         >
-          {user ? "Dashboard" : "Book Concierge"}
+          {user ? "Profile" : "Login"}
         </Link>
       </div>
     </nav>

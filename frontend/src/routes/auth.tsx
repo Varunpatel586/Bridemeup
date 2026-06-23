@@ -59,7 +59,7 @@ function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-ivory text-plum flex flex-col">
+    <div className="min-h-[100dvh] bg-ivory text-plum flex flex-col">
       <SiteHeader />
       <main className="flex-1 grid place-items-center px-6 py-20">
         <div className="w-full max-w-md bg-white rounded-3xl border border-plum/5 shadow-luxe p-10">
@@ -69,13 +69,17 @@ function AuthPage() {
               {isSignUp ? "Begin your journey." : "Welcome back."}
             </h1>
             <p className="text-plum/60 text-sm leading-relaxed">
-              {isSignUp ? "Create an account to save your favorite artists and plan your timeline." : "Sign in to access your bridal planner and saved artists."}
+              {isSignUp
+                ? "Create an account to save your favorite artists and plan your timeline."
+                : "Sign in to access your bridal planner and saved artists."}
             </p>
           </div>
 
           <form onSubmit={handleAuth} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-plum mb-1 uppercase tracking-widest">Email</label>
+              <label className="block text-xs font-semibold text-plum mb-1 uppercase tracking-widest">
+                Email
+              </label>
               <input
                 type="email"
                 required
@@ -86,7 +90,9 @@ function AuthPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-plum mb-1 uppercase tracking-widest">Password</label>
+              <label className="block text-xs font-semibold text-plum mb-1 uppercase tracking-widest">
+                Password
+              </label>
               <input
                 type="password"
                 required
@@ -102,7 +108,7 @@ function AuthPage() {
               disabled={loading}
               className="w-full py-3 bg-plum text-ivory rounded-xl font-semibold uppercase tracking-widest text-sm hover:bg-plum-light transition-all disabled:opacity-70 mt-4"
             >
-              {loading ? "Please wait..." : (isSignUp ? "Create Account" : "Sign In")}
+              {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
             </button>
           </form>
 

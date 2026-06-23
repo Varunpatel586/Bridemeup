@@ -10,7 +10,7 @@ export const Route = createFileRoute("/onboarding")({
     ],
   }),
   component: () => (
-    <div className="min-h-screen bg-ivory text-plum flex flex-col">
+    <div className="min-h-[100dvh] bg-ivory text-plum flex flex-col">
       <SiteHeader />
       <main className="flex-1 max-w-2xl mx-auto px-6 py-20">
         <p className="eyebrow text-rosegold mb-3">Beauty Twin AI</p>
@@ -19,7 +19,9 @@ export const Route = createFileRoute("/onboarding")({
           Coming in Phase 2 — guided onboarding to collect wedding date, budget, skin type, face
           shape, theme, and preferred makeup style.
         </p>
-        <Link to="/" className="eyebrow text-plum hover:text-rosegold border-b border-plum/20 pb-1">← Back home</Link>
+        <Link to="/" className="eyebrow text-plum hover:text-rosegold border-b border-plum/20 pb-1">
+          ← Back home
+        </Link>
       </main>
       <SiteFooter />
     </div>

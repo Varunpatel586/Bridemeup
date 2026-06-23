@@ -32,11 +32,14 @@ const stories = [
 
 export function SuccessStories() {
   return (
-    <section className="py-24 px-6 bg-ivory" id="stories">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <p className="eyebrow text-rosegold mb-3">Real Brides</p>
-          <h2 className="text-4xl md:text-5xl font-serif italic text-plum mb-4">
+    <section
+      className="min-h-[100dvh] flex items-center px-6 bg-ivory snap-start snap-always py-8"
+      id="stories"
+    >
+      <div className="w-full max-w-[95%] lg:max-w-6xl xl:max-w-[1400px] mx-auto">
+        <div className="text-center mb-8">
+          <p className="eyebrow text-rosegold mb-2">Real Brides</p>
+          <h2 className="text-3xl md:text-4xl font-serif italic text-plum mb-2">
             Transformations, not transactions.
           </h2>
         </div>
@@ -51,7 +54,7 @@ export function SuccessStories() {
               transition={{ duration: 0.7, delay: i * 0.12 }}
               className="group cursor-pointer"
             >
-              <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-5 ring-1 ring-plum/5">
+              <div className="relative w-full h-[45vh] max-h-[400px] rounded-2xl overflow-hidden mb-4 ring-1 ring-plum/5">
                 <img
                   src={s.img}
                   alt={s.bride}
@@ -64,7 +67,7 @@ export function SuccessStories() {
                   <p className="eyebrow text-ivory/70 mt-1">{s.venue}</p>
                 </div>
               </div>
-              <p className="font-serif italic text-plum/80 leading-relaxed mb-4 text-pretty">
+              <p className="font-serif italic text-sm text-plum/80 leading-relaxed mb-3 text-pretty">
                 "{s.quote}"
               </p>
               <div className="flex gap-6 eyebrow text-plum/50">

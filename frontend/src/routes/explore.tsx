@@ -15,15 +15,13 @@ function ExplorePage() {
 
   useEffect(() => {
     async function loadData() {
-      const { data, error } = await supabase
-        .from('stylists')
-        .select(`
+      const { data, error } = await supabase.from("stylists").select(`
           id,
           name,
           portfolio_images,
           salons ( id, name )
         `);
-      
+
       if (data && !error) {
         const generatedItems: Item[] = [];
         data.forEach((stylist: any) => {
@@ -39,23 +37,23 @@ function ExplorePage() {
                 alt: `Work by ${stylist.name}`,
                 aspect,
                 artistId: stylist.id,
-                salonId: stylist.salons?.id
+                salonId: stylist.salons?.id,
               });
             });
           }
         });
-        
+
         // Randomize the items slightly for a Pinterest feel
         generatedItems.sort(() => Math.random() - 0.5);
-        
+
         // Insert some promos and quotes periodically if we have enough images
         if (generatedItems.length > 3) {
-            generatedItems.splice(2, 0, { type: "promo" });
-            if (generatedItems.length > 6) {
-              generatedItems.splice(6, 0, { type: "quote" });
-            }
+          generatedItems.splice(2, 0, { type: "promo" });
+          if (generatedItems.length > 6) {
+            generatedItems.splice(6, 0, { type: "quote" });
+          }
         }
-        
+
         setItems(generatedItems);
       }
       setLoading(false);
@@ -64,7 +62,7 @@ function ExplorePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-ivory text-plum font-sans">
+    <div className="min-h-[100dvh] bg-ivory text-plum font-sans">
       <SiteHeader />
       <main className="pt-20">
         {loading ? (

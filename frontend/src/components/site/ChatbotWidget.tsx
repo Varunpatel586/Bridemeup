@@ -11,7 +11,11 @@ export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([
-    { role: "assistant", content: "Hi! I'm your AI bridal beauty concierge. How can I help you plan your perfect look today?" },
+    {
+      role: "assistant",
+      content:
+        "Hi! I'm your AI bridal beauty concierge. How can I help you plan your perfect look today?",
+    },
   ]);
 
   const handleSend = async (e: React.FormEvent) => {
@@ -23,28 +27,29 @@ export function ChatbotWidget() {
     setMessage("");
 
     try {
-        const res = await fetch("http://localhost:8000/api/analysis/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                face_shape: "Unknown", // General chat
-                messages: newChatHistory
-            })
-        });
+      const res = await fetch("http://localhost:8000/api/analysis/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          face_shape: "Unknown", // General chat
+          messages: newChatHistory,
+        }),
+      });
 
-        if (!res.ok) throw new Error("Failed to fetch");
+      if (!res.ok) throw new Error("Failed to fetch");
 
-        const data = await res.json();
-        setChatHistory((prev) => [
-            ...prev,
-            { role: "assistant", content: data.response },
-        ]);
+      const data = await res.json();
+      setChatHistory((prev) => [...prev, { role: "assistant", content: data.response }]);
     } catch (err) {
-        console.error(err);
-        setChatHistory((prev) => [
-            ...prev,
-            { role: "assistant", content: "Sorry, I am having trouble connecting to the neural network right now. Please try again later." },
-        ]);
+      console.error(err);
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            "Sorry, I am having trouble connecting to the neural network right now. Please try again later.",
+        },
+      ]);
     }
   };
 
@@ -57,7 +62,7 @@ export function ChatbotWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="mb-4 w-[350px] bg-white rounded-2xl shadow-xl overflow-hidden border border-plum/10 flex flex-col h-[450px]"
+            className="mb-4 w-[350px] sm:w-[380px] bg-white rounded-2xl shadow-xl overflow-hidden border border-plum/10 flex flex-col max-h-[70dvh] sm:max-h-[60dvh]"
           >
             {/* Header */}
             <div className="bg-plum p-4 flex items-center justify-between text-ivory">
@@ -96,7 +101,10 @@ export function ChatbotWidget() {
             </div>
 
             {/* Input Form */}
-            <form onSubmit={handleSend} className="p-3 bg-white border-t border-plum/10 flex items-center gap-2">
+            <form
+              onSubmit={handleSend}
+              className="p-3 bg-white border-t border-plum/10 flex items-center gap-2"
+            >
               <input
                 type="text"
                 value={message}

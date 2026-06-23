@@ -37,12 +37,15 @@ const packages = [
 
 export function PackagesSection() {
   return (
-    <section className="py-24 bg-pearl relative overflow-hidden" id="packages">
+    <section
+      className="flex-1 flex items-center justify-center w-full bg-pearl relative overflow-hidden snap-start snap-always py-8"
+      id="packages"
+    >
       <div className="absolute top-0 right-0 w-1/3 h-full shimmer-gold opacity-10 pointer-events-none" />
-      <div className="max-w-7xl mx-auto px-6 relative">
-        <div className="text-center mb-16">
-          <p className="eyebrow text-rosegold mb-3">Luxe Collections</p>
-          <h2 className="text-4xl md:text-5xl font-serif italic text-plum mb-4">
+      <div className="w-full max-w-[95%] 2xl:max-w-[1600px] mx-auto px-4 lg:px-8 relative">
+        <div className="text-center mb-8">
+          <p className="eyebrow text-rosegold mb-2">Luxe Collections</p>
+          <h2 className="text-3xl md:text-4xl font-serif italic text-plum mb-2">
             Bespoke for every chapter.
           </h2>
           <p className="text-plum/50 max-w-lg mx-auto">
@@ -50,7 +53,7 @@ export function PackagesSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {packages.map((p, i) => (
             <motion.div
               key={p.name}
@@ -58,7 +61,7 @@ export function PackagesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.7, delay: i * 0.1, ease: [0.19, 1, 0.22, 1] }}
-              className={`p-8 rounded-2xl flex flex-col transition-all hover:-translate-y-1 ${
+              className={`p-6 rounded-2xl flex flex-col transition-all hover:-translate-y-1 ${
                 p.featured
                   ? "bg-plum text-ivory shadow-luxe lg:scale-105 z-10"
                   : "bg-ivory border border-plum/5 hover:shadow-luxe"
@@ -72,10 +75,10 @@ export function PackagesSection() {
               <p className={`eyebrow mb-2 ${p.featured ? "text-rosegold" : "text-rosegold"}`}>
                 {p.tier}
               </p>
-              <h4 className={`text-xl font-serif mb-6 ${p.featured ? "text-ivory" : "text-plum"}`}>
+              <h4 className={`text-xl font-serif mb-4 ${p.featured ? "text-ivory" : "text-plum"}`}>
                 {p.name}
               </h4>
-              <ul className="space-y-3 mb-8 flex-grow">
+              <ul className="space-y-2 mb-6 flex-grow">
                 {p.features.map((f) => (
                   <li
                     key={f}
@@ -88,15 +91,11 @@ export function PackagesSection() {
                 ))}
               </ul>
               <div
-                className={`font-mono text-2xl mb-6 ${
-                  p.featured ? "text-rosegold" : "text-plum"
-                }`}
+                className={`font-mono text-2xl mb-6 ${p.featured ? "text-rosegold" : "text-plum"}`}
               >
                 {p.price}
                 <span
-                  className={`text-[10px] ml-1 ${
-                    p.featured ? "text-ivory/40" : "text-plum/40"
-                  }`}
+                  className={`text-[10px] ml-1 ${p.featured ? "text-ivory/40" : "text-plum/40"}`}
                 >
                   /event
                 </span>

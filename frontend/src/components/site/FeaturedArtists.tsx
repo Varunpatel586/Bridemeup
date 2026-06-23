@@ -10,20 +10,20 @@ export function FeaturedArtists() {
   useEffect(() => {
     async function loadArtists() {
       const { data, error } = await supabase
-        .from('stylists')
-        .select('*, salons(name, address, rating, reviews_count)');
-      
+        .from("stylists")
+        .select("*, salons(name, address, rating, reviews_count)");
+
       if (data && !error) {
         const formattedArtists = data.map((stylist: any) => {
           // Extract the first domain rating key as specialty, or default to Bridal Specialist
           const domains = stylist.domain_ratings ? Object.keys(stylist.domain_ratings) : [];
           const topDomain = domains.length > 0 ? domains[0] : "Bridal";
-          
+
           return {
             id: stylist.id,
             name: stylist.name,
             specialty: `${topDomain} Specialist · ${stylist.salons?.name || "Premium Salon"}`,
-            location: stylist.salons?.address?.split(',')[0] || "Delhi", // Just take the first part of address
+            location: stylist.salons?.address?.split(",")[0] || "Delhi", // Just take the first part of address
             rating: stylist.salons?.rating || 4.9,
             reviews: stylist.salons?.reviews_count || 120,
             price: "₹" + (Math.floor(Math.random() * 50) + 20) + "k", // Mocking price since it's in packages
@@ -39,7 +39,10 @@ export function FeaturedArtists() {
   }, []);
 
   return (
-    <section className="py-24 px-6 bg-pearl/60" id="artists">
+    <section
+      className="min-h-[100dvh] flex items-center px-6 bg-pearl/60 snap-start snap-always py-16"
+      id="artists"
+    >
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
@@ -73,7 +76,11 @@ export function FeaturedArtists() {
                 transition={{ duration: 0.7, delay: (i % 3) * 0.12, ease: [0.19, 1, 0.22, 1] }}
                 className="group bg-white rounded-2xl overflow-hidden border border-plum/5 hover:shadow-luxe transition-all flex flex-col"
               >
-                <Link to="/stylists/$id" params={{ id: a.id }} className="block relative aspect-[4/5] overflow-hidden">
+                <Link
+                  to="/stylists/$id"
+                  params={{ id: a.id }}
+                  className="block relative aspect-[4/5] overflow-hidden"
+                >
                   <img
                     src={a.img}
                     alt={a.name}
@@ -92,7 +99,9 @@ export function FeaturedArtists() {
                     <div className="flex items-start justify-between mb-2">
                       <div>
                         <Link to="/stylists/$id" params={{ id: a.id }}>
-                          <h3 className="font-serif italic text-lg text-plum hover:text-rosegold transition-colors">{a.name}</h3>
+                          <h3 className="font-serif italic text-lg text-plum hover:text-rosegold transition-colors">
+                            {a.name}
+                          </h3>
                         </Link>
                         <p className="text-[10px] text-plum/50 mt-1 line-clamp-1">{a.specialty}</p>
                       </div>
