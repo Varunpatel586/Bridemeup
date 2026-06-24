@@ -1,5 +1,5 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "@tanstack/react-router";
 
 const packages = [
   {
@@ -35,7 +35,83 @@ const packages = [
   },
 ];
 
+function parsePrice(priceStr: string): number {
+  const numStr = priceStr.replace(/[^0-9.]/g, "");
+  let multiplier = 1;
+  if (priceStr.toLowerCase().includes("k")) multiplier = 1000;
+  if (priceStr.toLowerCase().includes("l")) multiplier = 100000;
+  return parseFloat(numStr) * multiplier;
+}
+
+const loadScript = (src: string) => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 export function PackagesSection() {
+  const [loadingPkg, setLoadingPkg] = useState<string | null>(null);
+
+  const handlePayment = async (pkg: typeof packages[0]) => {
+    setLoadingPkg(pkg.name);
+    try {
+      const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+
+      if (!res) {
+        alert("Razorpay SDK failed to load. Are you online?");
+        return;
+      }
+
+      const amount = parsePrice(pkg.price);
+
+      // Create Order
+      const result = await fetch("http://localhost:8000/payments/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ package_name: pkg.name, amount }),
+      });
+
+      if (!result.ok) {
+        alert("Server error. Are you sure the backend is running?");
+        return;
+      }
+
+      const data = await result.json();
+
+      const options = {
+        key: data.key,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Bridemeup",
+        description: `Test Transaction for ${pkg.name}`,
+        order_id: data.order_id,
+        handler: function (response: any) {
+          alert(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
+        },
+        prefill: {
+          name: "Test User",
+          email: "test@example.com",
+          contact: "9999999999",
+        },
+        theme: {
+          color: "#4a1c40", // plum color
+        },
+      };
+
+      const paymentObject = new (window as any).Razorpay(options);
+      paymentObject.open();
+    } catch (err) {
+      console.error(err);
+      alert("Error initiating payment");
+    } finally {
+      setLoadingPkg(null);
+    }
+  };
+
   return (
     <section
       className="flex-1 flex items-center justify-center w-full bg-pearl relative overflow-hidden snap-start snap-always py-8"
@@ -100,16 +176,17 @@ export function PackagesSection() {
                   /event
                 </span>
               </div>
-              <Link
-                to="/packages"
+              <button
+                onClick={() => handlePayment(p)}
+                disabled={loadingPkg === p.name}
                 className={`w-full py-3 rounded-full eyebrow text-center transition-all ${
                   p.featured
                     ? "bg-rosegold text-plum hover:bg-champagne"
                     : "border border-plum/15 text-plum hover:bg-plum hover:text-ivory"
-                }`}
+                } disabled:opacity-50`}
               >
-                {p.featured ? "Book Experience" : "Select"}
-              </Link>
+                {loadingPkg === p.name ? "Processing..." : p.featured ? "Book Experience" : "Select"}
+              </button>
             </motion.div>
           ))}
         </div>

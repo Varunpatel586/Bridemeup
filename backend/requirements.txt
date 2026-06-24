@@ -10,3 +10,4 @@ numpy
 httpx
 python-multipart
 google-genai
+razorpay

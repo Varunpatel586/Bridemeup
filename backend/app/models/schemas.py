@@ -53,3 +53,13 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
+
+class PaymentOrderRequest(BaseModel):
+    package_name: str
+    amount: int
+
+class PaymentOrderResponse(BaseModel):
+    order_id: str
+    amount: int
+    currency: str
+    key: str
