@@ -35,7 +35,7 @@ function DashboardPage() {
           `
           *,
           salons (name, address),
-          stylists (name, role)
+          stylists (name)
         `,
         )
         .order("appointment_date", { ascending: true });
@@ -191,8 +191,7 @@ function DashboardPage() {
                       </div>
                       <div className="flex items-center gap-2 text-[#1A1A1A]/70">
                         <span>
-                          Stylist: <strong className="text-[#1A1A1A]">{apt.stylists?.name}</strong>{" "}
-                          ({apt.stylists?.role})
+                          Stylist: <strong className="text-[#1A1A1A]">{apt.stylists?.name}</strong>
                         </span>
                       </div>
                     </div>
