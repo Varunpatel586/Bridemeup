@@ -18,6 +18,10 @@ function StylistProfile() {
   const [stylist, setStylist] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [bookingState, setBookingState] = useState<"idle" | "loading" | "success">("idle");
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -38,6 +42,14 @@ function StylistProfile() {
           .single();
 
         if (error || !data) throw new Error("Not found");
+
+        const { data: reviewsData } = await supabase
+          .from("stylist_reviews")
+          .select("*")
+          .eq("stylist_id", id)
+          .order("created_at", { ascending: false });
+
+        setReviews(reviewsData || []);
 
         const mappedStylist = {
           ...data,
@@ -96,6 +108,40 @@ function StylistProfile() {
     }
   };
 
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      navigate({ to: "/auth", search: { redirect: `/stylists/${id}` } });
+      return;
+    }
+    if (!comment.trim()) return;
+
+    // Determine the best display name to use
+    const displayName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || "Verified User";
+
+    setSubmittingReview(true);
+    try {
+      const { data, error } = await supabase.from("stylist_reviews").insert({
+        stylist_id: stylist.id,
+        user_id: user.id,
+        user_name: displayName,
+        rating,
+        comment,
+      }).select().single();
+
+      if (error) throw error;
+
+      setReviews([data, ...reviews]);
+      setComment("");
+      setRating(5);
+    } catch (error) {
+      console.error("Failed to submit review", error);
+      alert("Failed to submit review. Please try again.");
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-[100dvh] bg-[#FAFAFA] flex items-center justify-center">
@@ -135,18 +181,26 @@ function StylistProfile() {
               <div>
                 <h1 className="text-3xl font-medium">{stylist.name}</h1>
                 <p className="text-[#C5A880] mb-2">{stylist.salon_name}</p>
-                <div className="flex gap-4 text-sm text-[#1A1A1A]/70">
-                  {Object.entries(stylist.domain_ratings || {})
-                    .slice(0, 3)
-                    .map(([domain, rating]: any) => (
-                      <div key={domain} className="flex items-center gap-1">
-                        <Star className="w-3 h-3 fill-[#1A1A1A]" />
-                        <span>
-                          {rating} {domain}
-                        </span>
-                      </div>
-                    ))}
+                <div className="flex gap-4 text-sm text-[#1A1A1A]/70 mb-4">
+                  <div className="flex items-center gap-1.5">
+                    <Star className="w-4 h-4 fill-[#C5A880] text-[#C5A880]" />
+                    {reviews.length > 0 ? (
+                      <span>
+                        <strong className="text-[#1A1A1A]">
+                          {(reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length).toFixed(1)}
+                        </strong>{" "}
+                        ({reviews.length} {reviews.length === 1 ? "review" : "reviews"})
+                      </span>
+                    ) : (
+                      <span>No reviews yet</span>
+                    )}
+                  </div>
                 </div>
+                {stylist.about && (
+                  <p className="text-[#1A1A1A]/80 leading-relaxed text-sm">
+                    {stylist.about}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -162,6 +216,90 @@ function StylistProfile() {
                   />
                 </div>
               ))}
+            </div>
+
+            {/* Reviews Section */}
+            <div className="mt-16 border-t border-neutral-100 pt-12">
+              <h2 className="text-2xl font-light mb-8">Client Reviews</h2>
+              
+              {/* Review Form */}
+              <div className="bg-white border border-neutral-100 rounded-2xl p-6 mb-8">
+                <h3 className="text-lg font-medium mb-4">Leave a Review</h3>
+                {!user ? (
+                  <p className="text-[#1A1A1A]/60 text-sm">
+                    Please <Link to="/auth" className="text-[#C5A880] hover:underline">sign in</Link> to leave a review.
+                  </p>
+                ) : (
+                  <form onSubmit={handleReviewSubmit} className="flex flex-col gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Rating</label>
+                      <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => setRating(star)}
+                            className="focus:outline-none"
+                          >
+                            <Star className={`w-6 h-6 ${star <= rating ? "fill-[#C5A880] text-[#C5A880]" : "text-neutral-300"}`} />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Comment</label>
+                      <textarea
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        placeholder="Share your experience with this artist..."
+                        className="w-full border border-neutral-200 rounded-lg p-3 outline-none focus:border-[#C5A880] min-h-[100px] resize-y"
+                        required
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={submittingReview || !comment.trim()}
+                      className="bg-[#1A1A1A] text-white px-6 py-3 rounded-lg w-fit disabled:opacity-50 hover:bg-[#1A1A1A]/90 transition-colors"
+                    >
+                      {submittingReview ? "Submitting..." : "Submit Review"}
+                    </button>
+                  </form>
+                )}
+              </div>
+
+              {/* Reviews List */}
+              <div className="space-y-6">
+                {reviews.length === 0 ? (
+                  <p className="text-[#1A1A1A]/60 text-center py-8">No reviews yet. Be the first to review!</p>
+                ) : (
+                  reviews.map((review) => (
+                    <div key={review.id} className="border-b border-neutral-100 pb-6 last:border-0">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center text-sm font-medium uppercase">
+                            {(review.user_name || "V").charAt(0)}
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">{review.user_name || "Verified User"}</p>
+                            <p className="text-xs text-[#1A1A1A]/50">
+                              {new Date(review.created_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-0.5">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star 
+                              key={star} 
+                              className={`w-3.5 h-3.5 ${star <= review.rating ? "fill-[#C5A880] text-[#C5A880]" : "text-neutral-200"}`} 
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-sm text-[#1A1A1A]/80 mt-3">{review.comment}</p>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
 
