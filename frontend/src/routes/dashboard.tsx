@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { useAuth } from "@/lib/AuthContext";
 import { useEffect, useState } from "react";
-import { Calendar, FileText, Clock, User, Save, LogOut } from "lucide-react";
+import { Calendar, FileText, Clock, User, Save, LogOut, X } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
@@ -80,6 +80,19 @@ function DashboardPage() {
       navigate({ to: "/" });
     } catch (e) {
       console.error("Logout failed", e);
+    }
+  };
+
+  const handleCancelAppointment = async (id: string) => {
+    if (!confirm("Are you sure you want to cancel this appointment?")) return;
+    try {
+      const { supabase } = await import("@/lib/supabase");
+      const { error } = await supabase.from("appointments").delete().eq("id", id);
+      if (error) throw error;
+      setAppointments((prev) => prev.filter((apt) => apt.id !== id));
+    } catch (e) {
+      console.error("Failed to cancel appointment", e);
+      alert("Failed to cancel appointment. Please try again.");
     }
   };
 
@@ -178,11 +191,19 @@ function DashboardPage() {
                         <h3 className="font-medium text-lg">{apt.salons?.name}</h3>
                         <p className="text-sm text-[#1A1A1A]/60">{apt.salons?.address}</p>
                       </div>
-                      <span
-                        className={`text-xs px-3 py-1 rounded-full uppercase tracking-widest ${apt.status === "pending" ? "bg-orange-50 text-orange-700" : "bg-green-50 text-green-700"}`}
-                      >
-                        {apt.status}
-                      </span>
+                      <div className="flex flex-col items-end gap-2">
+                        <span
+                          className={`text-xs px-3 py-1 rounded-full uppercase tracking-widest ${apt.status === "pending" ? "bg-orange-50 text-orange-700" : "bg-green-50 text-green-700"}`}
+                        >
+                          {apt.status}
+                        </span>
+                        <button
+                          onClick={() => handleCancelAppointment(apt.id)}
+                          className="text-[10px] uppercase tracking-widest font-medium text-red-600 bg-red-50 hover:bg-red-100 border border-red-100 px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-colors"
+                        >
+                          <X className="w-3 h-3" /> Cancel
+                        </button>
+                      </div>
                     </div>
                     <div className="flex flex-col gap-2 text-sm">
                       <div className="flex items-center gap-2">

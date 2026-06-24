@@ -76,7 +76,7 @@ export function PackagesSection() {
       const amount = parsePrice(pkg.price);
 
       const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:8000").replace(/\/$/, "");
-      
+
       // Create Order
       const result = await fetch(`${API_BASE}/payments/create-order`, {
         method: "POST",
@@ -128,11 +128,11 @@ export function PackagesSection() {
 
   return (
     <section
-      className="flex-1 flex items-center justify-center w-full bg-pearl relative overflow-hidden snap-start snap-always py-8"
+      className="w-full bg-pearl relative overflow-hidden snap-start snap-always pt-8 pb-20 min-h-[100dvh]"
       id="packages"
     >
       <div className="absolute top-0 right-0 w-1/3 h-full shimmer-gold opacity-10 pointer-events-none" />
-      <div className="w-full max-w-[95%] 2xl:max-w-[1600px] mx-auto px-4 lg:px-8 relative">
+      <div className="w-full max-w-7xl mx-auto px-6 relative">
         <div className="text-center mb-8">
           <p className="eyebrow text-rosegold mb-2">Luxe Collections</p>
           <h2 className="text-3xl md:text-4xl font-serif italic text-plum mb-2">

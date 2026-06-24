@@ -14,9 +14,11 @@ export const Route = createFileRoute("/discover")({
     ],
   }),
   component: () => (
-    <div className="min-h-[100dvh] bg-ivory text-plum">
+    <div className="min-h-[100dvh] bg-ivory text-plum flex flex-col">
       <SiteHeader />
-      <FeaturedArtists />
+      <main className="flex-1 pt-0">
+        <FeaturedArtists />
+      </main>
       <SiteFooter />
     </div>
   ),

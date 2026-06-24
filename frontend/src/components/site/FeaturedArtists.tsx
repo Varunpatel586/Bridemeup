@@ -40,7 +40,7 @@ export function FeaturedArtists() {
 
   return (
     <section
-      className="min-h-[100dvh] flex items-center px-6 bg-pearl/60 snap-start snap-always py-16"
+      className="px-6 bg-pearl/60 pt-4 pb-16"
       id="artists"
     >
       <div className="max-w-7xl mx-auto">

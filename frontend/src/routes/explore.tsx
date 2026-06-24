@@ -64,7 +64,7 @@ function ExplorePage() {
   return (
     <div className="min-h-[100dvh] bg-ivory text-plum font-sans">
       <SiteHeader />
-      <main className="pt-20">
+      <main className="pt-2">
         {loading ? (
           <div className="py-32 text-center text-plum/50">Loading aesthetics...</div>
         ) : (

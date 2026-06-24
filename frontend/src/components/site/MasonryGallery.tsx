@@ -18,24 +18,24 @@ const categories = [
 
 export type Item =
   | {
-      type: "image";
-      src: string;
-      tag: string;
-      alt: string;
-      aspect: string;
-      artistId?: string;
-      salonId?: string;
-    }
+    type: "image";
+    src: string;
+    tag: string;
+    alt: string;
+    aspect: string;
+    artistId?: string;
+    salonId?: string;
+  }
   | { type: "promo" }
   | {
-      type: "artist";
-      src: string;
-      name: string;
-      specialty: string;
-      match: number;
-      rating: number;
-      reviews: number;
-    }
+    type: "artist";
+    src: string;
+    name: string;
+    specialty: string;
+    match: number;
+    rating: number;
+    reviews: number;
+  }
   | { type: "quote" };
 
 const baseItems: Item[] = [
@@ -184,7 +184,7 @@ export function MasonryGallery({ limit, dynamicItems }: { limit?: number; dynami
 
   return (
     <section
-      className="min-h-[100dvh] py-16 px-6 bg-ivory snap-start snap-always flex items-center"
+      className="min-h-[100dvh] pt-4 px-6 bg-ivory snap-start snap-always flex items-center"
       id="gallery"
     >
       <div className="max-w-7xl mx-auto">
@@ -204,11 +204,10 @@ export function MasonryGallery({ limit, dynamicItems }: { limit?: number; dynami
               <button
                 key={c}
                 onClick={() => setActive(c)}
-                className={`px-4 py-2 rounded-full text-[11px] font-medium transition-all ${
-                  active === c
-                    ? "bg-plum text-ivory border border-plum"
-                    : "border border-plum/10 text-plum/70 hover:border-plum/30 hover:bg-pearl"
-                }`}
+                className={`px-4 py-2 rounded-full text-[11px] font-medium transition-all ${active === c
+                  ? "bg-plum text-ivory border border-plum"
+                  : "border border-plum/10 text-plum/70 hover:border-plum/30 hover:bg-pearl"
+                  }`}
               >
                 {c}
               </button>

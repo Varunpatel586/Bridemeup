@@ -65,7 +65,7 @@ function SalonsDirectory() {
   return (
     <div className="min-h-[100dvh] flex flex-col bg-[#FAFAFA] text-[#1A1A1A] font-sans">
       <SiteHeader />
-      <main className="flex-1 pt-20 pb-8 px-6 max-w-7xl mx-auto w-full">
+      <main className="flex-1 pt-5 pb-7 px-6 max-w-7xl mx-auto w-full min-h-[100dvh]">
         <div className="mb-8">
           <p className="text-sm font-medium text-[#C5A880] tracking-widest uppercase mb-2">
             The Directory
