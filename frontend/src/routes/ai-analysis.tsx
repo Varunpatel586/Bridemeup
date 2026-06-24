@@ -72,7 +72,8 @@ function AiAnalysisPage() {
       const formData = new FormData();
       formData.append("file", blob, "image.jpg");
 
-      const res = await fetch("http://localhost:8000/api/analysis/face", {
+      const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:8000").replace(/\/$/, "");
+      const res = await fetch(`${API_BASE}/api/analysis/face`, {
         method: "POST",
         body: formData,
       });
@@ -120,7 +121,8 @@ function AiAnalysisPage() {
     setIsChatLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8000/api/analysis/chat", {
+      const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:8000").replace(/\/$/, "");
+      const res = await fetch(`${API_BASE}/api/analysis/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
