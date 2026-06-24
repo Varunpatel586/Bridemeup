@@ -34,7 +34,7 @@ export function AIPlannerShowcase() {
 
   return (
     <section
-      className="min-h-[100dvh] flex items-center px-6 bg-ivory snap-start snap-always py-16"
+      className="min-h-[100dvh] flex items-center px-6 bg-ivory md:snap-start md:snap-always py-16"
       id="planner"
     >
       <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-16 items-start">

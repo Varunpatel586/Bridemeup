@@ -184,7 +184,7 @@ export function MasonryGallery({ limit, dynamicItems }: { limit?: number; dynami
 
   return (
     <section
-      className="min-h-[100dvh] pt-4 px-6 bg-ivory snap-start snap-always flex items-center"
+      className="min-h-[100dvh] pt-4 px-6 bg-ivory md:snap-start md:snap-always flex items-center"
       id="gallery"
     >
       <div className="max-w-7xl mx-auto">

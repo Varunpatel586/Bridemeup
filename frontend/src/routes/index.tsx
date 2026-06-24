@@ -30,9 +30,9 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="h-[100dvh] bg-ivory text-plum flex flex-col overflow-hidden">
+    <div className="bg-ivory text-plum flex flex-col md:h-[100dvh] md:overflow-hidden">
       <SiteHeader />
-      <main className="flex-1 overflow-y-auto snap-y snap-mandatory scroll-smooth overflow-x-hidden">
+      <main className="flex-1 md:overflow-y-auto md:snap-y md:snap-mandatory scroll-smooth overflow-x-hidden">
         <Hero />
         <AIPlannerShowcase />
         <MasonryGallery limit={15} />

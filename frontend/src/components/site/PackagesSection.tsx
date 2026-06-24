@@ -128,7 +128,7 @@ export function PackagesSection() {
 
   return (
     <section
-      className="w-full bg-pearl relative overflow-hidden snap-start snap-always pt-8 pb-20 min-h-[100dvh]"
+      className="w-full bg-pearl relative overflow-hidden md:snap-start md:snap-always pt-8 pb-20 min-h-[100dvh]"
       id="packages"
     >
       <div className="absolute top-0 right-0 w-1/3 h-full shimmer-gold opacity-10 pointer-events-none" />

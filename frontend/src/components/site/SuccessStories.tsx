@@ -33,7 +33,7 @@ const stories = [
 export function SuccessStories() {
   return (
     <section
-      className="min-h-[100dvh] flex items-center px-6 bg-ivory snap-start snap-always py-8"
+      className="min-h-[100dvh] flex items-center px-6 bg-ivory md:snap-start md:snap-always py-8"
       id="stories"
     >
       <div className="w-full max-w-[95%] lg:max-w-6xl xl:max-w-[1400px] mx-auto">

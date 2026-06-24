@@ -15,7 +15,7 @@ export function Hero() {
     }
   };
   return (
-    <header className="relative min-h-[100dvh] flex items-center px-6 overflow-hidden snap-start snap-always pt-00">
+    <header className="relative min-h-[100dvh] flex items-center px-6 overflow-hidden md:snap-start md:snap-always pt-00">
       {/* subtle gradient wash */}
       <div className="absolute inset-0 bg-gradient-to-b from-blush/30 via-ivory to-ivory pointer-events-none" />
       <div className="absolute top-40 -right-32 w-96 h-96 rounded-full bg-rosegold/10 blur-3xl pointer-events-none" />
