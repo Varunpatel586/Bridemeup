@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const packages = [
@@ -56,14 +56,21 @@ const loadScript = (src: string) => {
 export function PackagesSection() {
   const [loadingPkg, setLoadingPkg] = useState<string | null>(null);
 
+  // Preload the script on mount to avoid popup blocking in strict browsers like Firefox
+  useEffect(() => {
+    loadScript("https://checkout.razorpay.com/v1/checkout.js");
+  }, []);
+
   const handlePayment = async (pkg: typeof packages[0]) => {
     setLoadingPkg(pkg.name);
     try {
-      const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
-
-      if (!res) {
-        alert("Razorpay SDK failed to load. Are you online?");
-        return;
+      // It's safe to call loadScript again if it's already loading/loaded, but we mostly just need to make sure `window.Razorpay` is there.
+      if (!(window as any).Razorpay) {
+        const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+        if (!res) {
+          alert("Razorpay SDK failed to load. Are you using an adblocker?");
+          return;
+        }
       }
 
       const amount = parsePrice(pkg.price);
@@ -76,7 +83,12 @@ export function PackagesSection() {
       });
 
       if (!result.ok) {
-        alert("Server error. Are you sure the backend is running?");
+        let errMsg = "Server error.";
+        try {
+          const errData = await result.json();
+          errMsg = errData.detail || errMsg;
+        } catch (e) { }
+        alert(`Could not create order: ${errMsg}`);
         return;
       }
 
@@ -104,9 +116,9 @@ export function PackagesSection() {
 
       const paymentObject = new (window as any).Razorpay(options);
       paymentObject.open();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Error initiating payment");
+      alert(`Error initiating payment: ${err.message || err}`);
     } finally {
       setLoadingPkg(null);
     }
@@ -137,11 +149,10 @@ export function PackagesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.7, delay: i * 0.1, ease: [0.19, 1, 0.22, 1] }}
-              className={`p-6 rounded-2xl flex flex-col transition-all hover:-translate-y-1 ${
-                p.featured
-                  ? "bg-plum text-ivory shadow-luxe lg:scale-105 z-10"
-                  : "bg-ivory border border-plum/5 hover:shadow-luxe"
-              }`}
+              className={`p-6 rounded-2xl flex flex-col transition-all hover:-translate-y-1 ${p.featured
+                ? "bg-plum text-ivory shadow-luxe lg:scale-105 z-10"
+                : "bg-ivory border border-plum/5 hover:shadow-luxe"
+                }`}
             >
               {p.featured && (
                 <div className="inline-block self-start px-3 py-1 bg-rosegold text-plum text-[9px] font-bold rounded-full mb-4 uppercase tracking-tighter">
@@ -158,9 +169,8 @@ export function PackagesSection() {
                 {p.features.map((f) => (
                   <li
                     key={f}
-                    className={`text-xs flex items-center gap-2 ${
-                      p.featured ? "text-ivory/80" : "text-plum/80"
-                    }`}
+                    className={`text-xs flex items-center gap-2 ${p.featured ? "text-ivory/80" : "text-plum/80"
+                      }`}
                   >
                     <span className="size-1 bg-rosegold rounded-full shrink-0" /> {f}
                   </li>
@@ -179,11 +189,10 @@ export function PackagesSection() {
               <button
                 onClick={() => handlePayment(p)}
                 disabled={loadingPkg === p.name}
-                className={`w-full py-3 rounded-full eyebrow text-center transition-all ${
-                  p.featured
-                    ? "bg-rosegold text-plum hover:bg-champagne"
-                    : "border border-plum/15 text-plum hover:bg-plum hover:text-ivory"
-                } disabled:opacity-50`}
+                className={`w-full py-3 rounded-full eyebrow text-center transition-all ${p.featured
+                  ? "bg-rosegold text-plum hover:bg-champagne"
+                  : "border border-plum/15 text-plum hover:bg-plum hover:text-ivory"
+                  } disabled:opacity-50`}
               >
                 {loadingPkg === p.name ? "Processing..." : p.featured ? "Book Experience" : "Select"}
               </button>
