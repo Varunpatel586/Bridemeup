@@ -75,8 +75,10 @@ export function PackagesSection() {
 
       const amount = parsePrice(pkg.price);
 
+      const API_BASE = `http://${window.location.hostname}:8000`;
+      
       // Create Order
-      const result = await fetch("http://localhost:8000/payments/create-order", {
+      const result = await fetch(`${API_BASE}/payments/create-order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ package_name: pkg.name, amount }),
